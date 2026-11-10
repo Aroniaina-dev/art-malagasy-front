@@ -50,6 +50,11 @@ export async function api<T = unknown>(path: string, { method = "GET", token, js
     const d = data as { message?: string; error?: string };
     throw new ApiError(d.message || d.error || `Erreur ${res.status}`, res.status);
   }
+  // Le back répond 200 « Bienvenue… » aux routes qu'il ne connaît pas : on le traite comme un 404.
+  const d = data as { message?: unknown; version?: unknown; status?: unknown };
+  if (d.status === undefined && typeof d.version === "string" && typeof d.message === "string" && d.message.startsWith("Bienvenue")) {
+    throw new ApiError(`Route inconnue de l'API : ${path.split("?")[0]} (vérifiez API_URL et la version du back).`, 404);
+  }
   return data as T;
 }
 

@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: "Administration — ArtMadagascar", r
 const nav = [
   { href: "/admin", label: "Tableau de bord" },
   { href: "/admin/produits", label: "Produits" },
-  { href: "/admin/categories", label: "Catégories" },
+  { href: "/admin/referentiels", label: "Référentiels" },
   { href: "/admin/commandes", label: "Commandes" },
   { href: "/admin/blog", label: "Blog" },
   { href: "/admin/messages", label: "Messages" },

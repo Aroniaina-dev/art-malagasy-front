@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useMemo, useState } from "react";
-import { hasCategoryImage, type Category, type Product } from "@/lib/products";
+import { hasCategoryImage, type Category, type Product, type Ref } from "@/lib/products";
 import { Icon } from "./Icons";
 import ProductGrid from "./ProductGrid";
 import { useShop } from "./ShopProvider";
@@ -27,9 +27,13 @@ function CatIcon({ category }: { category: Category }) {
   return <Image className="cat-icon" src={`/categories/${category.slug}.png`} alt="" width={24} height={24} />;
 }
 
-export default function Catalog({ products, categories }: { products: Product[]; categories: Category[] }) {
+type Props = { products: Product[]; categories: Category[]; sizes: Ref[]; colorTypes: Ref[] };
+
+export default function Catalog({ products, categories, sizes, colorTypes }: Props) {
   const { query } = useShop();
   const [cat, setCat] = useState<string | null>(null);
+  const [size, setSize] = useState<string | null>(null);
+  const [colorType, setColorType] = useState<string | null>(null);
   const [price, setPrice] = useState<string | null>(null);
   const [stockOnly, setStockOnly] = useState(false);
   const [sort, setSort] = useState("recent");
@@ -38,6 +42,8 @@ export default function Catalog({ products, categories }: { products: Product[];
 
   const reset = () => {
     setCat(null);
+    setSize(null);
+    setColorType(null);
     setPrice(null);
     setStockOnly(false);
     setSort("recent");
@@ -48,10 +54,11 @@ export default function Catalog({ products, categories }: { products: Product[];
   const filtered = useMemo(() => {
     const range = priceRanges.find((r) => r.id === price);
     return products
-      .filter((p) => (!cat || p.category === cat) && (!range || range.test(p)) && (!stockOnly || p.inStock))
-      .filter((p) => p.name.toLocaleLowerCase("fr").includes(term))
+      .filter((p) => (!cat || p.category === cat) && (!size || p.size === size) && (!colorType || p.colorType === colorType))
+      .filter((p) => (!range || range.test(p)) && (!stockOnly || p.inStock))
+      .filter((p) => `${p.name} ${p.description} ${p.colors.join(" ")}`.toLocaleLowerCase("fr").includes(term))
       .sort(sorts[sort].fn);
-  }, [products, cat, price, stockOnly, term, sort]);
+  }, [products, cat, size, colorType, price, stockOnly, term, sort]);
 
   const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const current = Math.min(page, pages);
@@ -79,6 +86,32 @@ export default function Catalog({ products, categories }: { products: Product[];
             ))}
           </ul>
         </details>
+
+        {sizes.length > 0 && (
+          <details open>
+            <summary>Taille <Icon name="chevron" /></summary>
+            <div className="chips filter-chips">
+              {sizes.map((r) => (
+                <button key={r.id} className={`chip${size === r.id ? " on" : ""}`} aria-pressed={size === r.id} onClick={() => { setSize(size === r.id ? null : r.id); setPage(1); }}>
+                  {r.label}
+                </button>
+              ))}
+            </div>
+          </details>
+        )}
+
+        {colorTypes.length > 0 && (
+          <details open>
+            <summary>Couleur <Icon name="chevron" /></summary>
+            <div className="chips filter-chips">
+              {colorTypes.map((r) => (
+                <button key={r.id} className={`chip${colorType === r.id ? " on" : ""}`} aria-pressed={colorType === r.id} onClick={() => { setColorType(colorType === r.id ? null : r.id); setPage(1); }}>
+                  {r.label}
+                </button>
+              ))}
+            </div>
+          </details>
+        )}
 
         <details open>
           <summary>Prix <Icon name="chevron" /></summary>

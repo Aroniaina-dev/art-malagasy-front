@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useActionState } from "react";
-import type { Category } from "@/lib/products";
+import type { Ref } from "@/lib/products";
 import { savePost, saveProduct } from "../actions/admin";
 import type { FormState } from "../actions/contact";
 
@@ -12,31 +12,41 @@ export type ProductValues = {
   description: string;
   prix: number | null;
   nbrStock: number;
-  idCategorie: string;
-  ville: string;
+  idTypeProduit: string;
+  idTaille: string;
+  idTypeCouleur: string;
   couleur: string;
 };
 
-export function ProductForm({ product, categories }: { product?: ProductValues; categories: Category[] }) {
+type ProductFormProps = { product?: ProductValues; types: Ref[]; sizes: Ref[]; colorTypes: Ref[] };
+
+function Select({ name, label, options, value }: { name: string; label: string; options: Ref[]; value?: string }) {
+  return (
+    <label>{label}
+      <select name={name} defaultValue={value ?? options[0]?.id} required>
+        {options.map((o) => <option key={o.id} value={o.id}>{o.label}</option>)}
+      </select>
+    </label>
+  );
+}
+
+export function ProductForm({ product, types, sizes, colorTypes }: ProductFormProps) {
   const [state, action, pending] = useActionState<FormState, FormData>(saveProduct, {});
   return (
     <form className="contact-form admin-form" action={action}>
       {product && <input type="hidden" name="id" value={product.id} />}
       <label>Titre<input name="titre" defaultValue={product?.titre} required /></label>
       <label>Description<textarea name="description" rows={4} defaultValue={product?.description} required /></label>
-      <label>Catégorie
-        <select name="idCategorie" defaultValue={product?.idCategorie ?? categories[0]?.id} required>
-          {categories.map((c) => <option key={c.id} value={c.id}>{c.label}</option>)}
-        </select>
-      </label>
+      <div className="form-row">
+        <Select name="idTypeProduit" label="Type de produit" options={types} value={product?.idTypeProduit} />
+        <Select name="idTaille" label="Taille" options={sizes} value={product?.idTaille} />
+        <Select name="idTypeCouleur" label="Type de couleur" options={colorTypes} value={product?.idTypeCouleur} />
+      </div>
       <div className="form-row">
         <label>Prix (Ar)<input name="prix" type="number" min={1} defaultValue={product?.prix ?? ""} required /></label>
         <label>Stock<input name="nbrStock" type="number" min={0} defaultValue={product?.nbrStock ?? 1} required /></label>
       </div>
-      <div className="form-row">
-        <label>Ville<input name="ville" defaultValue={product?.ville ?? "Antananarivo"} required /></label>
-        <label>Couleur (facultatif)<input name="couleur" defaultValue={product?.couleur} /></label>
-      </div>
+      <label>Couleurs (facultatif, séparées par des virgules)<input name="couleur" defaultValue={product?.couleur} placeholder="rouge, beige" /></label>
       <label>Photos {product ? "(en choisir remplace les actuelles)" : ""}
         <input name="photos" type="file" accept="image/jpeg,image/png,image/webp" multiple />
       </label>

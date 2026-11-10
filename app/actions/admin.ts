@@ -36,9 +36,10 @@ const productSchema = z.object({
   description: z.string().trim().min(3, "Description requise").max(2000),
   prix: z.coerce.number({ error: "Prix invalide" }).int("Prix invalide").min(1, "Prix invalide"),
   nbrStock: z.coerce.number({ error: "Stock invalide" }).int("Stock invalide").min(0, "Stock invalide"),
-  idCategorie: z.string().min(1, "Catégorie requise"),
-  ville: z.string().trim().min(2, "Ville requise").max(100),
-  couleur: z.string().trim().max(50).optional(),
+  idTypeProduit: z.string().min(1, "Type de produit requis"),
+  idTaille: z.string().min(1, "Taille requise"),
+  idTypeCouleur: z.string().min(1, "Type de couleur requis"),
+  couleur: z.string().trim().max(200).optional(),
   photoUrl: imageUrl.optional(),
 });
 
@@ -47,23 +48,27 @@ export async function saveProduct(_prev: FormState, form: FormData): Promise<For
   const id = String(form.get("id") ?? "");
   const parsed = productSchema.safeParse(Object.fromEntries(form));
   if (!parsed.success) return { error: parsed.error.issues[0].message };
-  const { photoUrl, ...d } = parsed.data;
-
+  const { photoUrl, couleur, ...d } = parsed.data;
+  const couleurs = (couleur ?? "").split(",").map((c) => c.trim()).filter(Boolean);
   const uploads = files(form, "photos");
-  if (!id && uploads.length === 0 && !photoUrl) return { error: "Ajoutez au moins une photo (fichier ou URL)." };
-
-  const body = new FormData();
-  for (const [k, v] of Object.entries(d)) if (v !== undefined && v !== "") body.append(k, String(v));
-  if (!id) body.append("idUtilisateur", session.id);
-  if (uploads.length) uploads.forEach((f) => body.append("photos", f));
-  else if (!id && photoUrl) body.append("photos", photoUrl);
+  const path = id ? `/produit/${id}?source=produit` : "/produit?source=produit";
+  const method = id ? "PUT" : "POST";
 
   try {
-    await api(id ? `/article/${id}?source=article` : "/article?source=article", {
-      method: id ? "PUT" : "POST",
-      token: session.token,
-      form: body,
-    });
+    if (uploads.length) {
+      // multipart : nécessite l'upload côté back (middleware multer sur /produit)
+      const body = new FormData();
+      for (const [k, v] of Object.entries(d)) body.append(k, String(v));
+      couleurs.forEach((c) => body.append("couleur", c));
+      uploads.forEach((f) => body.append("photos", f));
+      await api(path, { method, token: session.token, form: body });
+    } else {
+      await api(path, {
+        method,
+        token: session.token,
+        json: { ...d, couleur: couleurs, ...(photoUrl ? { photos: [photoUrl] } : {}) },
+      });
+    }
   } catch (e) {
     return { error: msg(e) };
   }
@@ -73,33 +78,39 @@ export async function saveProduct(_prev: FormState, form: FormData): Promise<For
 export async function setProductArchive(form: FormData) {
   const token = await adminToken();
   const archive = form.get("archive") === "1" ? 1 : 2;
-  await run("/admin/produits", () => api(`/article/${form.get("id")}`, { method: "PATCH", token, json: { archive } }));
+  await run("/admin/produits", () => api(`/produit/${form.get("id")}`, { method: "PUT", token, json: { archive } }));
 }
 
 export async function deleteProduct(form: FormData) {
   const token = await adminToken();
-  await run("/admin/produits", () => api(`/article/${form.get("id")}`, { method: "DELETE", token }));
+  await run("/admin/produits", () => api(`/produit/${form.get("id")}`, { method: "DELETE", token }));
 }
 
-/* ----------------------------- Catégories ----------------------------- */
+/* ---------------- Référentiels : types de produit, tailles, types de couleur ---------------- */
 
-export async function createCategory(form: FormData) {
+const refKind = z.enum(["typeproduit", "taille", "typecouleur"]);
+const REFS = "/admin/referentiels";
+
+export async function createRef(form: FormData) {
   const token = await adminToken();
+  const kind = refKind.parse(form.get("kind"));
   const nom = String(form.get("nom") ?? "").trim();
-  if (!nom) redirect("/admin/categories?erreur=Nom%20requis");
-  await run("/admin/categories", () => api("/categorie", { method: "POST", token, json: { nom } }));
+  if (!nom) redirect(`${REFS}?erreur=Nom%20requis`);
+  await run(REFS, () => api(`/${kind}`, { method: "POST", token, json: { nom } }));
 }
 
-export async function renameCategory(form: FormData) {
+export async function renameRef(form: FormData) {
   const token = await adminToken();
+  const kind = refKind.parse(form.get("kind"));
   const nom = String(form.get("nom") ?? "").trim();
-  if (!nom) redirect("/admin/categories?erreur=Nom%20requis");
-  await run("/admin/categories", () => api(`/categorie/${form.get("id")}`, { method: "PUT", token, json: { nom } }));
+  if (!nom) redirect(`${REFS}?erreur=Nom%20requis`);
+  await run(REFS, () => api(`/${kind}/${form.get("id")}`, { method: "PATCH", token, json: { nom } }));
 }
 
-export async function deleteCategory(form: FormData) {
+export async function deleteRef(form: FormData) {
   const token = await adminToken();
-  await run("/admin/categories", () => api(`/categorie/${form.get("id")}`, { method: "DELETE", token }));
+  const kind = refKind.parse(form.get("kind"));
+  await run(REFS, () => api(`/${kind}/${form.get("id")}`, { method: "DELETE", token }));
 }
 
 /* ------------------------------ Commandes ----------------------------- */

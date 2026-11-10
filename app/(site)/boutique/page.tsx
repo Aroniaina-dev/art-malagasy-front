@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
-import { getCategories, getProducts, safe } from "@/lib/catalog";
+import { getCategories, getColorTypes, getProducts, getSizes, safe } from "@/lib/catalog";
 import Catalog from "@/app/components/Catalog";
 import { Icon } from "@/app/components/Icons";
 
@@ -12,11 +12,16 @@ export const metadata: Metadata = {
 };
 
 async function CatalogData() {
-  const [products, categories] = await Promise.all([safe(getProducts()), safe(getCategories())]);
+  const [products, categories, sizes, colorTypes] = await Promise.all([
+    safe(getProducts()),
+    safe(getCategories()),
+    safe(getSizes()),
+    safe(getColorTypes()),
+  ]);
   if (!products || !categories) {
     return <p className="no-result">La boutique est momentanément indisponible. Réessayez dans un instant.</p>;
   }
-  return <Catalog products={products} categories={categories} />;
+  return <Catalog products={products} categories={categories} sizes={sizes ?? []} colorTypes={colorTypes ?? []} />;
 }
 
 export default function BoutiquePage() {
@@ -30,7 +35,7 @@ export default function BoutiquePage() {
         </div>
       </section>
 
-      <section className="section shop-section">
+      <section className="section shop-section" id="resultats">
         <Suspense fallback={<p className="no-result">Chargement de la boutique…</p>}>
           <CatalogData />
         </Suspense>

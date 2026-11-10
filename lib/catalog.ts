@@ -1,22 +1,22 @@
 import "server-only";
 import { api, fileUrl } from "./api";
 import type { Post } from "./posts";
-import type { Category, Product } from "./products";
+import type { Category, Product, Ref } from "./products";
 import { categorySlug } from "./products";
 
-type ApiCategory = { _id: string; nom: string; archive?: number };
-type ApiArticle = {
+type ApiRef = { _id: string; nom: string };
+export type ApiProduit = {
   _id: string;
   titre: string;
   description: string;
   prix?: number;
   photos?: string[];
-  idCategorie: string;
+  idTypeProduit: string;
+  idTaille: string;
+  idTypeCouleur: string;
+  couleur?: string[];
   nbrStock?: number;
-  isVendu?: number;
   archive?: number;
-  couleur?: string;
-  ville?: string;
 };
 type ApiBlog = {
   _id: string;
@@ -30,31 +30,56 @@ type ApiBlog = {
   datePublication: string;
 };
 
-export async function getCategories(): Promise<Category[]> {
-  const res = await api<{ data: ApiCategory[] }>("/categorie");
-  return res.data
-    .filter((c) => c.archive !== 1)
-    .map((c) => ({ id: c._id, label: c.nom, slug: categorySlug(c.nom) ?? "" }));
-}
+const refs = async (path: string): Promise<Ref[]> => {
+  const res = await api<{ data: ApiRef[] }>(path);
+  if (!Array.isArray(res.data)) throw new Error(`Réponse inattendue de ${path}`);
+  return res.data.map((r) => ({ id: r._id, label: r.nom })).sort((a, b) => a.label.localeCompare(b.label, "fr"));
+};
 
-export const toProduct = (a: ApiArticle): Product => {
+/** Types de produit = catégories de la boutique. */
+export async function getCategories(): Promise<Category[]> {
+  return (await refs("/typeproduit")).map((r) => ({ ...r, slug: categorySlug(r.label) ?? "" }));
+}
+export const getSizes = () => refs("/taille");
+export const getColorTypes = () => refs("/typecouleur");
+
+export const toProduct = (a: ApiProduit): Product => {
   const stock = a.nbrStock ?? 0;
   return {
     id: a._id,
     name: a.titre,
     description: a.description,
     image: fileUrl(a.photos?.[0]),
-    category: String(a.idCategorie),
+    category: String(a.idTypeProduit),
+    size: String(a.idTaille),
+    colorType: String(a.idTypeCouleur),
+    colors: a.couleur ?? [],
     price: typeof a.prix === "number" ? a.prix : null,
     stock,
-    inStock: a.isVendu !== 1 && stock > 0,
+    inStock: stock > 0,
   };
 };
 
 /** Produits visibles en boutique (les articles archivés sont masqués). */
+/** Tous les produits, archivés compris (admin). */
+export async function getAllProducts(): Promise<ApiProduit[]> {
+  const res = await api<{ data: ApiProduit[] }>("/produit?limit=500&sort=-createdAt");
+  if (!Array.isArray(res.data)) throw new Error("Réponse inattendue de /produit");
+  return res.data;
+}
+
+/** Produits visibles en boutique (les produits archivés sont masqués). */
 export async function getProducts(limit?: number): Promise<Product[]> {
-  const res = await api<{ data: ApiArticle[] }>("/article?limit=200&sort=-createdAt");
-  const list = res.data.filter((a) => a.archive !== 1).map(toProduct);
+  const [all, categories] = await Promise.all([getAllProducts(), getCategories().catch(() => [])]);
+  const slugOf = new Map(categories.map((c) => [c.id, c.slug]));
+  const list = all
+    .filter((a) => a.archive !== 1)
+    .map((a) => {
+      const p = toProduct(a);
+      const slug = slugOf.get(p.category);
+      // sans photo : illustration du type de produit plutôt qu'une image générique
+      return a.photos?.length || !slug ? p : { ...p, image: `/categories/${slug}.png` };
+    });
   return limit ? list.slice(0, limit) : list;
 }
 
@@ -72,6 +97,7 @@ const toPost = (b: ApiBlog): Post => ({
 
 export async function getPosts(): Promise<Post[]> {
   const res = await api<{ data: ApiBlog[] }>("/blog?limit=100");
+  if (!Array.isArray(res.data)) throw new Error("Réponse inattendue de /blog");
   return res.data.map(toPost);
 }
 

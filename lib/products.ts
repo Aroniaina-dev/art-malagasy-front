@@ -1,4 +1,8 @@
+/** Type de produit du back (sac, chapeau…) : c'est la « catégorie » de la boutique. */
 export type Category = { id: string; label: string; slug: string };
+
+/** Taille ou type de couleur. */
+export type Ref = { id: string; label: string };
 
 /** Libellés connus → slug servant aux illustrations /categories/<slug>.png. */
 const knownSlugs: Record<string, string> = {
@@ -20,7 +24,10 @@ export type Product = {
   name: string;
   description: string;
   image: string;
-  category: string; // id de catégorie
+  category: string; // id du type de produit
+  size: string; // id de taille
+  colorType: string; // id du type de couleur
+  colors: string[];
   price: number | null; // null = « sur demande » (non commandable)
   stock: number;
   inStock: boolean;

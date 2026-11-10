@@ -99,3 +99,11 @@
   .cart-row { grid-template-columns: 64px 1fr auto; }
   .cart-line, .cart-remove { justify-self: end; }
 }
+
+.search-btn { border: 0; background: none; padding: 0; display: grid; cursor: pointer; color: inherit; }
+.filter-chips { margin: 0; padding-bottom: 12px; gap: 6px; }
+.filter-chips .chip { padding: 6px 12px; font-size: 12px; }
+#resultats { scroll-margin-top: 110px; }
+
+.ref-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 22px; align-items: start; }
+.ref-title { font-family: var(--font-playfair), serif; font-size: 20px; margin: 0 0 12px; }

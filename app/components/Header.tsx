@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Suspense, useState } from "react";
 import { Icon } from "./Icons";
 import { useShop } from "./ShopProvider";
@@ -40,6 +40,7 @@ function LinkList({ pathname }: { pathname: string | null }) {
 export default function Header() {
   const [open, setOpen] = useState(false);
   const { cart, query, setQuery } = useShop();
+  const router = useRouter();
 
   return (
     <header className="main-header">
@@ -56,15 +57,24 @@ export default function Header() {
           </Suspense>
         </nav>
         <div className="header-actions">
-          <label className="search">
-            <Icon name="search" />
+          {/* La saisie filtre la liste en direct ; Entrée ouvre la boutique avec la recherche appliquée. */}
+          <form
+            className="search"
+            role="search"
+            onSubmit={(e) => {
+              e.preventDefault();
+              router.push("/boutique#resultats");
+            }}
+          >
+            <button type="submit" className="search-btn" aria-label="Rechercher"><Icon name="search" /></button>
             <input
               type="search"
+              aria-label="Rechercher un article"
               placeholder="Rechercher un article..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
-          </label>
+          </form>
           <Link className="icon-btn" href="/compte" aria-label="Mon compte"><Icon name="user" /></Link>
           <Link className="icon-btn" href="/panier" aria-label={`Panier (${cart})`}>
             <Icon name="cart" />

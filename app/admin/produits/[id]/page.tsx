@@ -1,16 +1,14 @@
 import { notFound } from "next/navigation";
 import { api, ApiError } from "@/lib/api";
-import { getCategories } from "@/lib/catalog";
+import { getCategories, getColorTypes, getSizes, type ApiProduit } from "@/lib/catalog";
 import { ProductForm } from "../../../components/AdminForms";
-
-type Article = { _id: string; titre: string; description: string; prix?: number; nbrStock?: number; idCategorie: string; ville?: string; couleur?: string };
 
 export default async function EditProduct({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const categories = await getCategories();
-  let a: Article;
+  const [types, sizes, colorTypes] = await Promise.all([getCategories(), getSizes(), getColorTypes()]);
+  let a: ApiProduit;
   try {
-    a = (await api<{ data: Article }>(`/article/${encodeURIComponent(id)}`)).data;
+    a = (await api<{ data: ApiProduit }>(`/produit/${encodeURIComponent(id)}`)).data;
   } catch (e) {
     if (e instanceof ApiError && [400, 404, 500].includes(e.status)) notFound();
     throw e;
@@ -19,16 +17,19 @@ export default async function EditProduct({ params }: { params: Promise<{ id: st
     <>
       <h1 className="admin-title">Modifier « {a.titre} »</h1>
       <ProductForm
-        categories={categories}
+        types={types}
+        sizes={sizes}
+        colorTypes={colorTypes}
         product={{
           id: a._id,
           titre: a.titre,
           description: a.description,
           prix: a.prix ?? null,
           nbrStock: a.nbrStock ?? 0,
-          idCategorie: String(a.idCategorie),
-          ville: a.ville ?? "",
-          couleur: a.couleur ?? "",
+          idTypeProduit: String(a.idTypeProduit),
+          idTaille: String(a.idTaille),
+          idTypeCouleur: String(a.idTypeCouleur),
+          couleur: (a.couleur ?? []).join(", "),
         }}
       />
     </>
