@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
-import { getCategories, getProducts } from "@/lib/catalog";
+import { getCategories, getProducts, safe } from "@/lib/catalog";
 import Catalog from "@/app/components/Catalog";
 import { Icon } from "@/app/components/Icons";
 
@@ -12,7 +12,10 @@ export const metadata: Metadata = {
 };
 
 async function CatalogData() {
-  const [products, categories] = await Promise.all([getProducts(), getCategories()]);
+  const [products, categories] = await Promise.all([safe(getProducts()), safe(getCategories())]);
+  if (!products || !categories) {
+    return <p className="no-result">La boutique est momentanément indisponible. Réessayez dans un instant.</p>;
+  }
   return <Catalog products={products} categories={categories} />;
 }
 

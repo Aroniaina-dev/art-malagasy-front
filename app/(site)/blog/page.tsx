@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { isOptimizable } from "@/lib/products";
 import { formatDate } from "@/lib/posts";
-import { getPosts } from "@/lib/catalog";
+import { getPosts, safe } from "@/lib/catalog";
 
 export const metadata: Metadata = {
   title: "Blog — ArtMadagascar",
@@ -12,7 +12,8 @@ export const metadata: Metadata = {
 };
 
 async function PostList() {
-  const posts = await getPosts();
+  const posts = await safe(getPosts());
+  if (!posts) return <p className="no-result">Le blog est momentanément indisponible. Réessayez dans un instant.</p>;
   if (!posts.length) return <p className="no-result">Aucun article pour le moment.</p>;
   return (
     <div className="posts">

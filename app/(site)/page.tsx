@@ -4,7 +4,7 @@ import Link from "next/link";
 import ProductGrid from "@/app/components/ProductGrid";
 import { Suspense } from "react";
 import { hasCategoryImage } from "@/lib/products";
-import { getCategories, getProducts } from "@/lib/catalog";
+import { getCategories, getProducts, safe } from "@/lib/catalog";
 
 const benefits = [
   { icon: "shield", title: "Paiement sécurisé", text: "Achetez en toute confiance" },
@@ -78,12 +78,14 @@ export default function Home() {
 }
 
 async function FeaturedProducts() {
-  const items = await getProducts(5);
+  const items = await safe(getProducts(5));
+  if (!items) return <p className="no-result">Notre catalogue est momentanément indisponible. Réessayez dans un instant.</p>;
   return <ProductGrid items={items} />;
 }
 
 async function CategoryBar() {
-  const categories = await getCategories();
+  const categories = await safe(getCategories());
+  if (!categories) return null;
   return (
     <nav className="categories" aria-label="Catégories">
       {categories.map((c) => (

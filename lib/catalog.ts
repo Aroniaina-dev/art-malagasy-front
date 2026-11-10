@@ -84,3 +84,16 @@ export async function getPost(slug: string): Promise<Post | null> {
     throw e;
   }
 }
+
+/**
+ * Pour les pages publiques : si l'API est injoignable ou répond de travers, on renvoie null
+ * (la page affiche un message) au lieu de faire planter toute la page.
+ */
+export async function safe<T>(promise: Promise<T>): Promise<T | null> {
+  try {
+    return await promise;
+  } catch (e) {
+    console.error("[api] chargement impossible :", e instanceof Error ? e.message : e);
+    return null;
+  }
+}

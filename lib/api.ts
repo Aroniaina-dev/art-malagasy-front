@@ -1,5 +1,9 @@
 import "server-only";
 
+if (process.env.NODE_ENV === "production" && !process.env.API_URL) {
+  console.error("[api] API_URL n'est pas défini : les appels vont vers localhost:4000. Définissez API_URL, FILES_URL et JWT_SECRET dans l'environnement de déploiement.");
+}
+
 const API_URL = (process.env.API_URL ?? "http://localhost:4000/api/v1").replace(/\/$/, "");
 const FILES_URL = (process.env.FILES_URL ?? "http://localhost:4000").replace(/\/$/, "");
 
