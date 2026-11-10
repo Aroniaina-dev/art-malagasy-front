@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Découvrez l'artisanat malgache : sacs en raphia, bijoux, sculptures, textiles et créations faites à la main.">
+  <title>ArtMadagascar — L'artisanat malgache, notre fierté</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --wine:#780d2d; --wine-dark:#3c0d20; --wine-deep:#260b18;
+      --cream:#fffaf5; --sand:#f7e8d8; --gold:#f4a62a;
+      --ink:#27151b; --muted:#806d70; --line:#eadbd4;
+      --shadow:0 12px 32px rgba(65,25,35,.09);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--cream);color:var(--ink);font-family:"DM Sans",sans-serif}
+    a{color:inherit;text-decoration:none}
+    button,input{font:inherit}
+    .topbar{background:var(--wine-dark);color:#fff;font-size:12px}
+    .topbar-inner{max-width:1380px;margin:auto;padding:10px 28px;display:flex;justify-content:space-between;gap:18px;align-items:center}
+    .topbar span{display:flex;align-items:center;gap:8px}
+    .main-header{background:#fff;position:sticky;top:0;z-index:20;box-shadow:0 4px 20px rgba(50,15,25,.05)}
+    .header-inner{max-width:1380px;margin:auto;min-height:82px;padding:12px 28px;display:flex;align-items:center;gap:34px}
+    .brand{display:flex;align-items:center;gap:10px;min-width:260px}
+    .brand-mark{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#f5b33d,#8b1437);font-size:27px}
+    .brand-name{font-family:"Playfair Display",serif;font-size:25px;font-weight:800;letter-spacing:-1px}
+    .brand-name span{color:var(--wine)}
+    .brand small{display:block;font-size:11px;color:#574448;margin-top:-2px}
+    nav{display:flex;align-items:center;gap:28px;margin:auto;font-weight:700;font-size:14px}
+    nav a{padding:12px 0;transition:.2s}
+    nav a:hover,nav a.active{color:var(--wine)}
+    nav a.active{background:var(--wine);color:#fff;border-radius:28px;padding:12px 21px}
+    .header-actions{display:flex;align-items:center;gap:17px}
+    .search{display:flex;align-items:center;border:1px solid #dfd4d2;border-radius:30px;padding:10px 15px;gap:9px;width:220px}
+    .search input{border:0;outline:0;width:100%;font-size:12px;background:transparent}
+    .icon-btn{border:0;background:transparent;font-size:23px;cursor:pointer;position:relative;color:var(--ink)}
+    .cart-count{position:absolute;top:-6px;right:-8px;background:var(--wine);color:white;border-radius:50%;font-size:10px;width:17px;height:17px;display:grid;place-items:center}
+    .menu-toggle{display:none}
+    .hero{min-height:390px;background:linear-gradient(90deg,rgba(255,249,242,.96) 0%,rgba(255,249,242,.85) 36%,rgba(255,249,242,.08) 68%),url("https://images.unsplash.com/photo-1518998053901-5348d3961a04?auto=format&fit=crop&w=2000&q=85") center/cover;display:flex;align-items:center}
+    .hero-inner{max-width:1380px;width:100%;margin:auto;padding:58px 45px}
+    .eyebrow{color:var(--wine);font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+    h1{font-family:"Playfair Display",serif;font-size:clamp(42px,5.2vw,70px);line-height:1.04;max-width:610px;margin:13px 0 18px;letter-spacing:-2px}
+    h1 span{color:var(--wine)}
+    .hero p{max-width:490px;color:#4d3a3d;font-size:16px;line-height:1.7;margin:0 0 26px}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;background:var(--wine);color:#fff;padding:15px 25px;border-radius:30px;font-weight:700;border:0;cursor:pointer;transition:.2s}
+    .btn:hover{background:var(--wine-dark);transform:translateY(-2px)}
+    .categories-wrap{max-width:1320px;margin:-32px auto 0;padding:0 22px;position:relative;z-index:2}
+    .categories{display:grid;grid-template-columns:repeat(7,1fr);background:#fff;border-radius:22px;box-shadow:var(--shadow);padding:18px 8px}
+    .category{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;padding:3px 8px;border-right:1px solid var(--line);font-size:12px;font-weight:700;text-align:center;transition:.2s}
+    .category:last-child{border:0}
+    .category:hover{color:var(--wine);transform:translateY(-3px)}
+    .category .emoji{font-size:32px;filter:drop-shadow(0 4px 3px rgba(50,20,20,.12))}
+    .benefits{max-width:1280px;margin:20px auto 0;padding:0 22px}
+    .benefit-row{background:var(--sand);border-radius:22px;padding:20px 26px;display:grid;grid-template-columns:repeat(4,1fr)}
+    .benefit{display:flex;align-items:center;gap:15px;padding:0 20px;border-right:1px solid #e5c7ac}
+    .benefit:last-child{border:0}
+    .benefit .symbol{font-size:29px;color:var(--wine)}
+    .benefit strong{display:block;font-size:13px}
+    .benefit small{display:block;color:#6c5555;font-size:11px;margin-top:4px}
+    .section{max-width:1380px;margin:40px auto;padding:0 28px}
+    .section-heading{display:flex;align-items:end;justify-content:space-between;margin-bottom:20px}
+    .section-heading h2{font-family:"Playfair Display",serif;font-size:29px;margin:0}
+    .section-heading h2:before{content:"";display:inline-block;width:32px;height:4px;background:var(--wine);margin:0 14px 8px 0}
+    .text-link{color:var(--wine);font-weight:700;font-size:13px}
+    .product-layout{display:grid;grid-template-columns:1fr 265px;gap:20px}
+    .products{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:15px}
+    .product{background:#fff;border:1px solid #f0e6e1;border-radius:17px;overflow:hidden;box-shadow:0 5px 16px rgba(55,20,25,.06);transition:.25s;position:relative}
+    .product:hover{transform:translateY(-5px);box-shadow:var(--shadow)}
+    .product-image{height:190px;background:#f1e5d9;position:relative;overflow:hidden}
+    .product-image img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s}
+    .product:hover .product-image img{transform:scale(1.06)}
+    .discount{position:absolute;top:12px;left:11px;background:#d41455;color:white;font-size:10px;font-weight:800;padding:5px 8px;border-radius:20px}
+    .heart{position:absolute;top:9px;right:10px;border:0;background:#ffffffd9;border-radius:50%;width:30px;height:30px;font-size:17px;cursor:pointer}
+    .product-info{padding:12px}
+    .product-info h3{font-size:12px;font-weight:600;margin:0 0 8px;min-height:18px}
+    .price-row{display:flex;align-items:center;justify-content:space-between;gap:5px}
+    .price{color:var(--wine);font-size:15px;font-weight:800;white-space:nowrap}
+    .old-price{font-size:10px;color:#9b8b8b;text-decoration:line-through}
+    .add-cart{border:0;background:var(--wine);color:#fff;border-radius:9px;width:32px;height:30px;cursor:pointer;font-size:15px}
+    .promo{border-radius:18px;min-height:100%;padding:25px 22px;color:white;background:linear-gradient(155deg,rgba(48,8,25,.93),rgba(116,12,47,.87)),url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=700&q=80") center/cover;display:flex;flex-direction:column;justify-content:center}
+    .promo .madagascar{font-size:38px}
+    .promo h3{font-family:"Playfair Display",serif;font-size:27px;line-height:1.15;margin:12px 0}
+    .promo p{font-size:13px;line-height:1.6;color:#f7e9e9}
+    .promo .btn{background:var(--gold);color:#311522;padding:12px 18px;font-size:12px;align-self:flex-start;margin-top:10px}
+    .story{background:#f6e8dc;padding:45px 28px;margin-top:55px}
+    .story-inner{max-width:1320px;margin:auto;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:45px}
+    .story h2{font-family:"Playfair Display",serif;font-size:34px;margin:10px 0}
+    .story p{color:#6b5557;line-height:1.8;font-size:14px}
+    .story-photo{height:270px;border-radius:20px;background:url("https://images.unsplash.com/photo-1528698827591-e19ccd7bc23d?auto=format&fit=crop&w=1000&q=85") center/cover}
+    footer{background:var(--wine-deep);color:#f8e9e9;padding:38px 28px}
+    .footer-inner{max-width:1320px;margin:auto;display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap}
+    footer p,footer a{font-size:12px;color:#d9c4ca;line-height:1.8}
+    footer h4{margin:0 0 10px}
+    .toast{position:fixed;bottom:22px;right:22px;background:#241018;color:#fff;padding:13px 18px;border-radius:12px;box-shadow:var(--shadow);opacity:0;transform:translateY(12px);transition:.25s;z-index:50;pointer-events:none;font-size:13px}
+    .toast.show{opacity:1;transform:translateY(0)}
+    @media(max-width:1050px){
+      .header-inner{gap:15px}.brand{min-width:auto}.brand-name{font-size:21px}nav{gap:15px}
+      .search{width:170px}.products{grid-template-columns:repeat(3,1fr)}
+      .product-layout{grid-template-columns:1fr 230px}
+    }
+    @media(max-width:760px){
+      .topbar-inner{justify-content:center}.topbar-inner span:nth-child(2),.topbar-inner span:nth-child(3){display:none}
+      .header-inner{min-height:70px;padding:10px 17px;justify-content:space-between}
+      .brand-mark{width:40px;height:40px;font-size:22px}.brand-name{font-size:19px}.brand small{font-size:9px}
+      .menu-toggle{display:block;border:0;background:none;font-size:24px;cursor:pointer}
+      nav{display:none;position:absolute;top:70px;left:0;right:0;background:#fff;padding:16px 22px 22px;box-shadow:var(--shadow);flex-direction:column;align-items:stretch;gap:4px}
+      nav.open{display:flex}nav a{padding:12px}nav a.active{border-radius:10px}
+      .header-actions{gap:10px}.search{display:none}
+      .hero{min-height:430px;background-position:58% center}
+      .hero-inner{padding:55px 24px}h1{font-size:45px;max-width:430px}.hero p{font-size:14px;max-width:350px}
+      .categories-wrap{margin-top:-20px;padding:0 12px}
+      .categories{grid-template-columns:repeat(4,1fr);gap:12px 0;padding:15px 5px}
+      .category{border-right:0;font-size:10px}.category .emoji{font-size:26px}
+      .benefits{padding:0 12px}.benefit-row{grid-template-columns:repeat(2,1fr);gap:18px;padding:18px 10px}
+      .benefit{padding:0 8px;border:0}.benefit .symbol{font-size:24px}
+      .section{padding:0 15px;margin:32px auto}.section-heading h2{font-size:24px}
+      .product-layout{grid-template-columns:1fr}.products{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+      .product-image{height:155px}.product-info{padding:10px}.price{font-size:13px}
+      .promo{min-height:230px}.story-inner{grid-template-columns:1fr;gap:20px}.story-photo{height:210px}
+    }
+    @media(max-width:390px){.products{grid-template-columns:1fr 1fr}.product-image{height:135px}.brand-name{font-size:17px}}
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <span>🚚 Livraison partout à Madagascar</span>
+      <span>⭐ Artisanat 100% Malgache</span>
+      <span>☎ +261 34 12 345 67</span>
+      <span>◎ Instagram &nbsp; f Facebook</span>
+    </div>
+  </div>
+
+  <header class="main-header">
+    <div class="header-inner">
+      <button class="menu-toggle" aria-label="Ouvrir le menu" onclick="document.querySelector('nav').classList.toggle('open')">☰</button>
+      <a class="brand" href="#">
+        <div class="brand-mark">🌺</div>
+        <div><div class="brand-name">Art<span>Madagascar</span></div><small>L’artisanat malgache, notre fierté</small></div>
+      </a>
+      <nav>
+        <a class="active" href="#">Accueil</a>
+        <a href="#boutique">Boutique⌄</a>
+        <a href="#histoire">À propos</a>
+        <a href="#histoire">Blog</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <div class="header-actions">
+        <label class="search"><span>⌕</span><input id="searchInput" type="search" placeholder="Rechercher un article..."></label>
+        <button class="icon-btn" aria-label="Mon compte">♙</button>
+        <button class="icon-btn" aria-label="Panier">🛒<span class="cart-count" id="cartCount">0</span></button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="eyebrow">L'artisanat de nos régions</div>
+        <h1>Découvrez l’authenticité <span>de Madagascar</span></h1>
+        <p>Des créations uniques, faites à la main par nos artisans locaux : sacs, vannerie, bijoux, objets déco et bien plus encore.</p>
+        <a class="btn" href="#boutique">Découvrir la boutique <span>→</span></a>
+      </div>
+    </section>
+
+    <div class="categories-wrap">
+      <div class="categories">
+        <a class="category" href="#boutique"><span class="emoji">👜</span>Sacs & Vannerie</a>
+        <a class="category" href="#boutique"><span class="emoji">🎭</span>Masques & Sculptures</a>
+        <a class="category" href="#boutique"><span class="emoji">📿</span>Bijoux</a>
+        <a class="category" href="#boutique"><span class="emoji">🏺</span>Décoration</a>
+        <a class="category" href="#boutique"><span class="emoji">🧣</span>Textiles Malgaches</a>
+        <a class="category" href="#boutique"><span class="emoji">🌳</span>Souvenirs</a>
+        <a class="category" href="#boutique"><span class="emoji">🎁</span>Cadeaux</a>
+      </div>
+    </div>
+
+    <section class="benefits">
+      <div class="benefit-row">
+        <div class="benefit"><span class="symbol">♢</span><div><strong>Paiement sécurisé</strong><small>Achetez en toute confiance</small></div></div>
+        <div class="benefit"><span class="symbol">🚚</span><div><strong>Livraison rapide</strong><small>Partout à Madagascar</small></div></div>
+        <div class="benefit"><span class="symbol">♧</span><div><strong>Service client réactif</strong><small>Nous sommes là pour vous</small></div></div>
+        <div class="benefit"><span class="symbol">♡</span><div><strong>Soutien aux artisans</strong><small>Ensemble, valorisons notre culture</small></div></div>
+      </div>
+    </section>
+
+    <section class="section" id="boutique">
+      <div class="section-heading">
+        <h2>Nos coups de cœur</h2>
+        <a class="text-link" href="#boutique">Voir toute la boutique →</a>
+      </div>
+      <div class="product-layout">
+        <div class="products" id="productGrid">
+          <article class="product" data-name="sac en raphia tressé">
+            <div class="product-image"><img src="https://images.unsplash.com/photo-1590877375652-1e3b6e5d5f2b?auto=format&fit=crop&w=700&q=85" alt="Sac tressé en fibres naturelles"><span class="discount">-15%</span><button class="heart" aria-label="Ajouter aux favoris">♡</button></div>
+            <div class="product-info"><h3>Sac en raphia tressé</h3><div class="price-row"><span class="price">45 000 Ar</span><span class="old-price">53 000 Ar</span><button class="add-cart" aria-label="Ajouter au panier">🛒</button></div></div>
+          </article>
+          <article class="product" data-name="sculpture couple malgache">
+            <div class="product-image"><img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=700&q=85" alt="Sculpture artisanale en bois"><button class="heart" aria-label="Ajouter aux favoris">♡</button></div>
+            <div class="product-info"><h3>Sculpture couple malgache</h3><div class="price-row"><span class="price">75 000 Ar</span><button class="add-cart" aria-label="Ajouter au panier">🛒</button></div></div>
+          </article>
+          <article class="product" data-name="collier en graines naturelles">
+            <div class="product-image"><img src="https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=700&q=85" alt="Collier de perles naturelles"><span class="discount">-10%</span><button class="heart" aria-label="Ajouter aux favoris">♡</button></div>
+            <div class="product-info"><h3>Collier en graines naturelles</h3><div class="price-row"><span class="price">27 000 Ar</span><span class="old-price">30 000 Ar</span><button class="add-cart" aria-label="Ajouter au panier">🛒</button></div></div>
+          </article>
+          <article class="product" data-name="chapeau traditionnel">
+            <div class="product-image"><img src="https://images.unsplash.com/photo-1521369909029-2afed882baee?auto=format&fit=crop&w=700&q=85" alt="Chapeau tressé traditionnel"><button class="heart" aria-label="Ajouter aux favoris">♡</button></div>
+            <div class="product-info"><h3>Chapeau traditionnel</h3><div class="price-row"><span class="price">35 000 Ar</span><button class="add-cart" aria-label="Ajouter au panier">🛒</button></div></div>
+          </article>
+          <article class="product" data-name="manta malgache textile">
+            <div class="product-image"><img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=700&q=85" alt="Textile artisanal tissé"><span class="discount">-20%</span><button class="heart" aria-label="Ajouter aux favoris">♡</button></div>
+            <div class="product-info"><h3>Manta malgache</h3><div class="price-row"><span class="price">32 000 Ar</span><span class="old-price">40 000 Ar</span><button class="add-cart" aria-label="Ajouter au panier">🛒</button></div></div>
+          </article>
+        </div>
+        <aside class="promo">
+          <div class="madagascar">🇲🇬</div>
+          <h3>Soutenez l’artisanat malgache !</h3>
+          <p>Un achat, un impact positif pour nos artisans. Chaque création raconte une histoire et fait vivre un savoir-faire local.</p>
+          <a class="btn" href="#histoire">En savoir plus →</a>
+        </aside>
+      </div>
+    </section>
+
+    <section class="story" id="histoire">
+      <div class="story-inner">
+        <div>
+          <div class="eyebrow">Un savoir-faire à partager</div>
+          <h2>Chaque création a une histoire.</h2>
+          <p>Nous mettons en lumière les talents des artisans malgaches et leurs créations réalisées avec passion. En choisissant leurs produits, vous soutenez des communautés locales et contribuez à préserver des techniques artisanales transmises de génération en génération.</p>
+          <a class="btn" href="#boutique">Explorer les créations →</a>
+        </div>
+        <div class="story-photo" role="img" aria-label="Ambiance artisanale et décoration naturelle"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="contact">
+    <div class="footer-inner">
+      <div><h4>ArtMadagascar</h4><p>L’artisanat malgache, notre fierté.<br>Des créations authentiques, faites avec passion.</p></div>
+      <div><h4>La boutique</h4><p><a href="#boutique">Tous les produits</a><br><a href="#boutique">Nouveautés</a><br><a href="#boutique">Meilleures ventes</a></p></div>
+      <div><h4>Informations</h4><p><a href="#histoire">À propos</a><br><a href="#contact">Livraison & retours</a><br><a href="#contact">Conditions générales</a></p></div>
+      <div><h4>Contact</h4><p>Antananarivo, Madagascar<br>+261 34 12 345 67<br>contact@artmadagascar.mg</p></div>
+    </div>
+  </footer>
+  <div class="toast" id="toast">Produit ajouté au panier</div>
+
+  <script>
+    let cart = 0;
+    const count = document.getElementById('cartCount');
+    const toast = document.getElementById('toast');
+    let toastTimer;
+    document.querySelectorAll('.add-cart').forEach(button => {
+      button.addEventListener('click', () => {
+        cart += 1;
+        count.textContent = cart;
+        toast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
+      });
+    });
+    document.querySelectorAll('.heart').forEach(button => {
+      button.addEventListener('click', () => {
+        button.textContent = button.textContent === '♡' ? '♥' : '♡';
+        button.style.color = button.textContent === '♥' ? '#b20f43' : '';
+      });
+    });
+    document.getElementById('searchInput').addEventListener('input', event => {
+      const term = event.target.value.toLocaleLowerCase('fr');
+      document.querySelectorAll('.product').forEach(product => {
+        product.style.display = product.dataset.name.includes(term) ? '' : 'none';
+      });
+    });
+  </script>
+</body>
+</html>
