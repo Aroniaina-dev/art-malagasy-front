@@ -28,6 +28,8 @@ export type Product = {
   size: string; // id de taille
   colorType: string; // id du type de couleur
   colors: string[];
+  sizeLabel?: string;
+  colorTypeLabel?: string;
   price: number | null; // null = « sur demande » (non commandable)
   stock: number;
   inStock: boolean;

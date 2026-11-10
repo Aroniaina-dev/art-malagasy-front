@@ -30,10 +30,11 @@ function CatIcon({ category }: { category: Category }) {
 type Props = { products: Product[]; categories: Category[]; sizes: Ref[]; colorTypes: Ref[] };
 
 export default function Catalog({ products, categories, sizes, colorTypes }: Props) {
-  const { query } = useShop();
+  const { query, setQuery } = useShop();
   const [cat, setCat] = useState<string | null>(null);
   const [size, setSize] = useState<string | null>(null);
   const [colorType, setColorType] = useState<string | null>(null);
+  const [color, setColor] = useState<string | null>(null);
   const [price, setPrice] = useState<string | null>(null);
   const [stockOnly, setStockOnly] = useState(false);
   const [sort, setSort] = useState("recent");
@@ -44,6 +45,8 @@ export default function Catalog({ products, categories, sizes, colorTypes }: Pro
     setCat(null);
     setSize(null);
     setColorType(null);
+    setColor(null);
+    setQuery("");
     setPrice(null);
     setStockOnly(false);
     setSort("recent");
@@ -55,10 +58,17 @@ export default function Catalog({ products, categories, sizes, colorTypes }: Pro
     const range = priceRanges.find((r) => r.id === price);
     return products
       .filter((p) => (!cat || p.category === cat) && (!size || p.size === size) && (!colorType || p.colorType === colorType))
+      .filter((p) => !color || p.colors.some((c) => c.toLocaleLowerCase("fr") === color))
       .filter((p) => (!range || range.test(p)) && (!stockOnly || p.inStock))
       .filter((p) => `${p.name} ${p.description} ${p.colors.join(" ")}`.toLocaleLowerCase("fr").includes(term))
       .sort(sorts[sort].fn);
-  }, [products, cat, size, colorType, price, stockOnly, term, sort]);
+  }, [products, cat, size, colorType, color, price, stockOnly, term, sort]);
+
+  // Couleurs réellement présentes sur les produits
+  const colors = useMemo(
+    () => [...new Set(products.flatMap((p) => p.colors.map((c) => c.toLocaleLowerCase("fr"))))].sort((a, b) => a.localeCompare(b, "fr")),
+    [products],
+  );
 
   const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const current = Math.min(page, pages);
@@ -71,6 +81,17 @@ export default function Catalog({ products, categories, sizes, colorTypes }: Pro
     <div className="shop-layout">
       <aside className="filters">
         <div className="filters-title"><Icon name="filter" /> Filtres</div>
+
+        <label className="filter-search">
+          <Icon name="search" />
+          <input
+            type="search"
+            aria-label="Rechercher dans la boutique"
+            placeholder="Nom, description, couleur…"
+            value={query}
+            onChange={(e) => { setQuery(e.target.value); setPage(1); }}
+          />
+        </label>
 
         <details open>
           <summary>Catégories <Icon name="chevron" /></summary>
@@ -102,11 +123,24 @@ export default function Catalog({ products, categories, sizes, colorTypes }: Pro
 
         {colorTypes.length > 0 && (
           <details open>
-            <summary>Couleur <Icon name="chevron" /></summary>
+            <summary>Type de couleur <Icon name="chevron" /></summary>
             <div className="chips filter-chips">
               {colorTypes.map((r) => (
                 <button key={r.id} className={`chip${colorType === r.id ? " on" : ""}`} aria-pressed={colorType === r.id} onClick={() => { setColorType(colorType === r.id ? null : r.id); setPage(1); }}>
                   {r.label}
+                </button>
+              ))}
+            </div>
+          </details>
+        )}
+
+        {colors.length > 0 && (
+          <details open>
+            <summary>Couleur <Icon name="chevron" /></summary>
+            <div className="chips filter-chips">
+              {colors.map((c) => (
+                <button key={c} className={`chip${color === c ? " on" : ""}`} aria-pressed={color === c} onClick={() => { setColor(color === c ? null : c); setPage(1); }}>
+                  {c}
                 </button>
               ))}
             </div>

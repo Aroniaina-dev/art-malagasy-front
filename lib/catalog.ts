@@ -70,12 +70,21 @@ export async function getAllProducts(): Promise<ApiProduit[]> {
 
 /** Produits visibles en boutique (les produits archivés sont masqués). */
 export async function getProducts(limit?: number): Promise<Product[]> {
-  const [all, categories] = await Promise.all([getAllProducts(), getCategories().catch(() => [])]);
+  const none: Ref[] = [];
+  const [all, categories, sizes, colorTypes] = await Promise.all([
+    getAllProducts(),
+    getCategories().catch(() => []),
+    getSizes().catch(() => none),
+    getColorTypes().catch(() => none),
+  ]);
   const slugOf = new Map(categories.map((c) => [c.id, c.slug]));
+  const sizeOf = new Map(sizes.map((r) => [r.id, r.label]));
+  const colorTypeOf = new Map(colorTypes.map((r) => [r.id, r.label]));
   const list = all
     .filter((a) => a.archive !== 1)
     .map((a) => {
-      const p = toProduct(a);
+      const base = toProduct(a);
+      const p = { ...base, sizeLabel: sizeOf.get(base.size), colorTypeLabel: colorTypeOf.get(base.colorType) };
       const slug = slugOf.get(p.category);
       // sans photo : illustration du type de produit plutôt qu'une image générique
       return a.photos?.length || !slug ? p : { ...p, image: `/categories/${slug}.png` };

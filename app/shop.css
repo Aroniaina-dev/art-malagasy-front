@@ -107,3 +107,8 @@
 
 .ref-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 22px; align-items: start; }
 .ref-title { font-family: var(--font-playfair), serif; font-size: 20px; margin: 0 0 12px; }
+
+.filter-search { display: flex; align-items: center; gap: 8px; margin: 14px 16px 2px; border: 1px solid #dfd4d2; border-radius: 30px; padding: 9px 14px; }
+.filter-search input { border: 0; outline: 0; width: 100%; font-size: 13px; background: transparent; }
+.filter-chips .chip { text-transform: capitalize; }
+.product-meta { margin: -4px 0 8px; font-size: 11px; color: var(--muted); text-transform: capitalize; }

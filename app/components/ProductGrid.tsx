@@ -25,6 +25,11 @@ function ProductCard({ p }: { p: Product }) {
       </div>
       <div className="product-info">
         <h3>{p.name}</h3>
+        {(p.sizeLabel || p.colors.length > 0 || p.colorTypeLabel) && (
+          <p className="product-meta">
+            {[p.sizeLabel, p.colors.length ? p.colors.join(", ") : p.colorTypeLabel].filter(Boolean).join(" · ")}
+          </p>
+        )}
         <div className="price-row">
           <span className="price">{p.price === null ? "Sur demande" : formatAr(p.price)}</span>
           <button
