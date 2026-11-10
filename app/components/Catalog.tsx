@@ -40,6 +40,7 @@ export default function Catalog({ products, categories, sizes, colorTypes }: Pro
   const [sort, setSort] = useState("recent");
   const [view, setView] = useState<"grid" | "list">("grid");
   const [page, setPage] = useState(1);
+  const [filtersOpen, setFiltersOpen] = useState(false); // repliés par défaut sur mobile
 
   const reset = () => {
     setCat(null);
@@ -79,8 +80,11 @@ export default function Catalog({ products, categories, sizes, colorTypes }: Pro
 
   return (
     <div className="shop-layout">
-      <aside className="filters">
-        <div className="filters-title"><Icon name="filter" /> Filtres</div>
+      <aside className={`filters${filtersOpen ? " open" : ""}`}>
+        <button type="button" className="filters-title" aria-expanded={filtersOpen} onClick={() => setFiltersOpen((o) => !o)}>
+          <Icon name="filter" /> Filtres <span className="filters-toggle"><Icon name="chevron" /></span>
+        </button>
+        <div className="filters-body">
 
         <label className="filter-search">
           <Icon name="search" />
@@ -168,6 +172,7 @@ export default function Catalog({ products, categories, sizes, colorTypes }: Pro
         </details>
 
         <button className="btn reset" onClick={reset}><Icon name="refresh" /> Réinitialiser</button>
+        </div>
       </aside>
 
       <div>
