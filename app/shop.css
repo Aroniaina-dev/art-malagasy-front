@@ -154,3 +154,18 @@
   .shop-cta { padding: 24px 18px; }
   .promo { padding: 22px 18px; }
 }
+
+/* Langue et devise */
+.prefs { display: flex; align-items: center; gap: 8px; }
+.switch { display: inline-flex; border: 1px solid #dfd4d2; border-radius: 20px; overflow: hidden; font-size: 12px; font-weight: 700; }
+.switch a { padding: 6px 9px; color: var(--muted); }
+.switch a.on { background: var(--wine); color: #fff; }
+.currency { border: 1px solid #dfd4d2; border-radius: 20px; padding: 6px 8px; font-size: 12px; font-weight: 700; background: #fff; color: var(--ink); cursor: pointer; }
+@media (max-width: 1250px) { .search { width: 150px; } }
+@media (max-width: 760px) {
+  .prefs { gap: 5px; }
+  .switch a { padding: 5px 6px; font-size: 11px; }
+  .currency { padding: 5px 4px; font-size: 11px; max-width: 62px; }
+  .header-actions { gap: 8px; }
+  .brand img { height: 32px; }
+}

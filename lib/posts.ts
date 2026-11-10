@@ -10,8 +10,8 @@ export type Post = {
   body?: string;
 };
 
-export const formatDate = (d: string | Date) =>
-  new Date(d).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+export const formatDate = (d: string | Date, lang: "fr" | "en" = "fr") =>
+  new Date(d).toLocaleDateString(lang === "fr" ? "fr-FR" : "en-GB", { day: "numeric", month: "long", year: "numeric" });
 
 /** Le contenu est du texte brut : un paragraphe par bloc séparé par une ligne vide. */
 export const toParagraphs = (body: string) =>

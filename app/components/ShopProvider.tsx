@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import type { Product } from "@/lib/products";
+import { useI18n } from "./I18nProvider";
 
 export type CartItem = { id: string; name: string; image: string; price: number; qty: number };
 
@@ -64,6 +65,7 @@ export function useShop() {
 export default function ShopProvider({ children }: { children: ReactNode }) {
   const raw = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   const items = useMemo(() => parse(raw), [raw]);
+  const added = useI18n().d.product.added;
   const [query, setQuery] = useState("");
   const [toast, setToast] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -106,7 +108,7 @@ export default function ShopProvider({ children }: { children: ReactNode }) {
     <ShopContext.Provider value={value}>
       {children}
       <div className={`toast${toast ? " show" : ""}`} role="status">
-        Produit ajouté au panier
+        {added}
       </div>
     </ShopContext.Provider>
   );

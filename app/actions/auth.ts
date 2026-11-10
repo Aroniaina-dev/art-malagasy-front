@@ -4,20 +4,26 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { api, ApiError } from "@/lib/api";
+import { dictionaries, isLang, type Dict, type Lang } from "@/lib/dictionaries";
 import { COOKIE, verifyToken } from "@/lib/session";
 import type { FormState } from "./contact";
 
-/** N'autorise que les redirections internes. */
-const safePath = (p: FormDataEntryValue | null) => {
-  const v = typeof p === "string" ? p : "";
-  return v.startsWith("/") && !v.startsWith("//") ? v : "/compte";
+const langOf = (form: FormData): Lang => {
+  const l = String(form.get("lang") ?? "");
+  return isLang(l) ? l : "fr";
 };
 
-async function startSession(email: string, password: string): Promise<string | null> {
+/** N'autorise que les redirections internes. */
+const safePath = (p: FormDataEntryValue | null, lang: Lang) => {
+  const v = typeof p === "string" ? p : "";
+  return v.startsWith("/") && !v.startsWith("//") ? v : `/${lang}/compte`;
+};
+
+async function startSession(email: string, password: string, e: Dict["errors"]): Promise<string | null> {
   try {
     const res = await api<{ access: string }>("/auth/login", { method: "POST", json: { email, password } });
     const session = await verifyToken(res.access);
-    if (!session) return "Connexion impossible : configuration du secret JWT incohérente.";
+    if (!session) return e.jwt;
     (await cookies()).set(COOKIE, res.access, {
       httpOnly: true,
       sameSite: "lax",
@@ -26,34 +32,37 @@ async function startSession(email: string, password: string): Promise<string | n
       maxAge: 60 * 60 * 24 * 7,
     });
     return null;
-  } catch (e) {
-    if (e instanceof ApiError) {
+  } catch (err) {
+    if (err instanceof ApiError) {
       // 400 = email ou mot de passe faux : message volontairement générique
-      return e.status === 400 ? "Email ou mot de passe incorrect." : e.message;
+      return err.status === 400 ? e.credentials : err.message;
     }
-    throw e;
+    throw err;
   }
 }
 
 export async function login(_prev: FormState, form: FormData): Promise<FormState> {
+  const lang = langOf(form);
+  const e = dictionaries[lang].errors;
   const email = String(form.get("email") ?? "").trim().toLowerCase();
   const password = String(form.get("password") ?? "");
-  if (!email || !password) return { error: "Email et mot de passe requis." };
-  const error = await startSession(email, password);
+  if (!email || !password) return { error: e.required };
+  const error = await startSession(email, password, e);
   if (error) return { error };
-  redirect(safePath(form.get("callbackUrl")));
+  redirect(safePath(form.get("callbackUrl"), lang));
 }
 
-const registerSchema = z.object({
-  nom: z.string().trim().min(2, "Nom trop court").max(100),
-  prenom: z.string().trim().min(2, "Prénom trop court").max(100),
-  email: z.string().trim().toLowerCase().email("Email invalide").max(200),
-  tel: z.string().trim().max(30).optional(),
-  password: z.string().min(8, "Mot de passe : 8 caractères minimum").max(200),
-});
-
 export async function register(_prev: FormState, form: FormData): Promise<FormState> {
-  const parsed = registerSchema.safeParse(Object.fromEntries(form));
+  const lang = langOf(form);
+  const e = dictionaries[lang].errors;
+  const schema = z.object({
+    nom: z.string().trim().min(2, e.nameShort).max(100),
+    prenom: z.string().trim().min(2, e.firstNameShort).max(100),
+    email: z.string().trim().toLowerCase().email(e.emailInvalid).max(200),
+    tel: z.string().trim().max(30).optional(),
+    password: z.string().min(8, e.passwordShort).max(200),
+  });
+  const parsed = schema.safeParse(Object.fromEntries(form));
   if (!parsed.success) return { error: parsed.error.issues[0].message };
   const d = parsed.data;
   try {
@@ -61,18 +70,19 @@ export async function register(_prev: FormState, form: FormData): Promise<FormSt
       method: "POST",
       json: { nom: d.nom, prenom: d.prenom, email: d.email, tel: d.tel, password: d.password, passwordConfirm: d.password },
     });
-  } catch (e) {
-    if (e instanceof ApiError) {
-      return { error: /duplicate|E11000|existe/i.test(e.message) ? "Un compte existe déjà avec cet email." : e.message };
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return { error: /duplicate|E11000|existe/i.test(err.message) ? e.exists : err.message };
     }
-    throw e;
+    throw err;
   }
-  const error = await startSession(d.email, d.password);
-  if (error) return { error: "Compte créé, mais la connexion a échoué. Essayez de vous connecter." };
-  redirect(safePath(form.get("callbackUrl")));
+  const error = await startSession(d.email, d.password, e);
+  if (error) return { error: e.createdButLogin };
+  redirect(safePath(form.get("callbackUrl"), lang));
 }
 
-export async function logout() {
+export async function logout(form?: FormData) {
   (await cookies()).delete(COOKIE);
-  redirect("/");
+  const l = form ? String(form.get("lang") ?? "") : "";
+  redirect(isLang(l) ? `/${l}` : "/");
 }

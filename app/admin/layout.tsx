@@ -3,6 +3,9 @@ import Link from "next/link";
 import { Suspense, type ReactNode } from "react";
 import { requireAdmin } from "@/lib/session";
 import { logout } from "../actions/auth";
+import { fontClasses } from "../fonts";
+import "../globals.css";
+import "../shop.css";
 
 export const metadata: Metadata = { title: "Administration | ArtMadagascar", robots: { index: false } };
 
@@ -36,10 +39,14 @@ async function Gate({ children }: { children: ReactNode }) {
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="admin-page">
-      <Suspense fallback={<p className="section no-result">Chargement…</p>}>
-        <Gate>{children}</Gate>
-      </Suspense>
-    </div>
+    <html lang="fr" className={fontClasses}>
+      <body className="min-h-full flex flex-col">
+        <div className="admin-page">
+          <Suspense fallback={<p className="section no-result">Chargement…</p>}>
+            <Gate>{children}</Gate>
+          </Suspense>
+        </div>
+      </body>
+    </html>
   );
 }
