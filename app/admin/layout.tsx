@@ -4,7 +4,7 @@ import { Suspense, type ReactNode } from "react";
 import { requireAdmin } from "@/lib/session";
 import { logout } from "../actions/auth";
 
-export const metadata: Metadata = { title: "Administration — ArtMadagascar", robots: { index: false } };
+export const metadata: Metadata = { title: "Administration | ArtMadagascar", robots: { index: false } };
 
 const nav = [
   { href: "/admin", label: "Tableau de bord" },

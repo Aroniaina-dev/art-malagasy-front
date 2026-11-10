@@ -22,12 +22,12 @@ export default async function AdminHome() {
   const revenue = (orders?.data ?? []).filter((o) => o.paymentStatus === "paid").reduce((n, o) => n + o.totalAmount, 0);
 
   const cards = [
-    { label: "Commandes à traiter", value: orders ? inProgress : "—", href: "/admin/commandes", hot: inProgress > 0 },
-    { label: "Messages non lus", value: messages ? messages.nonLus : "—", href: "/admin/messages", hot: (messages?.nonLus ?? 0) > 0 },
-    { label: "Produits (stock ≤ 3)", value: products ? `${active.length} (${lowStock})` : "—", href: "/admin/produits", hot: lowStock > 0 },
-    { label: "Commandes au total", value: orders ? orders.total : "—", href: "/admin/commandes" },
+    { label: "Commandes à traiter", value: orders ? inProgress : "Indisponible", href: "/admin/commandes", hot: inProgress > 0 },
+    { label: "Messages non lus", value: messages ? messages.nonLus : "Indisponible", href: "/admin/messages", hot: (messages?.nonLus ?? 0) > 0 },
+    { label: "Produits (stock ≤ 3)", value: products ? `${active.length} (${lowStock})` : "Indisponible", href: "/admin/produits", hot: lowStock > 0 },
+    { label: "Commandes au total", value: orders ? orders.total : "Indisponible", href: "/admin/commandes" },
     { label: "Encaissé (100 dernières)", value: formatAr(revenue), href: "/admin/commandes" },
-    { label: "Utilisateurs", value: users ? users.results : "—", href: "/admin/utilisateurs" },
+    { label: "Utilisateurs", value: users ? users.results : "Indisponible", href: "/admin/utilisateurs" },
   ];
 
   return (

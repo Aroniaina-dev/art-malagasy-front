@@ -11,7 +11,7 @@ export default async function AdminProducts({ searchParams }: { searchParams: Pr
   await requireAdmin();
   const [data, types, sizes] = await Promise.all([getAllProducts(), getCategories(), getSizes()]);
   const type = (id: string) => types.find((c) => c.id === String(id));
-  const size = (id: string) => sizes.find((c) => c.id === String(id))?.label ?? "—";
+  const size = (id: string) => sizes.find((c) => c.id === String(id))?.label ?? "Non défini";
 
   return (
     <>
@@ -32,9 +32,9 @@ export default async function AdminProducts({ searchParams }: { searchParams: Pr
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <td><img className="thumb" src={img} alt="" width={44} height={44} /></td>
                   <td>{a.titre}{!a.photos?.length && <small className="warn"> (sans photo)</small>}</td>
-                  <td>{t?.label ?? "—"}</td>
+                  <td>{t?.label ?? "Non défini"}</td>
                   <td>{size(a.idTaille)}</td>
-                  <td>{typeof a.prix === "number" ? formatAr(a.prix) : "—"}</td>
+                  <td>{typeof a.prix === "number" ? formatAr(a.prix) : "Non défini"}</td>
                   <td className={(a.nbrStock ?? 0) === 0 ? "bad" : (a.nbrStock ?? 0) <= 3 ? "warn" : ""}>{a.nbrStock ?? 0}</td>
                   <td>{a.archive === 1 ? "Archivé" : "En ligne"}</td>
                   <td className="row-actions">
