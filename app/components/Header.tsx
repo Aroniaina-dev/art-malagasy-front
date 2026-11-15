@@ -77,6 +77,18 @@ function CurrencySwitch() {
   );
 }
 
+function Prefs({ className }: { className: string }) {
+  return (
+    // un clic ici ne doit pas refermer le menu mobile
+    <div className={className} onClick={(e) => e.stopPropagation()}>
+      <Suspense fallback={null}>
+        <LangSwitch />
+      </Suspense>
+      <CurrencySwitch />
+    </div>
+  );
+}
+
 export default function Header() {
   const [open, setOpen] = useState(false);
   const { cart, query, setQuery } = useShop();
@@ -97,6 +109,8 @@ export default function Header() {
           <Suspense fallback={<LinkList current={null} />}>
             <NavLinks />
           </Suspense>
+          {/* Sur mobile, langue et devise sont dans le menu pour alléger le header. */}
+          <Prefs className="prefs prefs-mobile" />
         </nav>
         <div className="header-actions">
           {/* La saisie filtre la liste en direct ; Entrée ouvre la boutique avec la recherche appliquée. */}
@@ -111,12 +125,7 @@ export default function Header() {
             <button type="submit" className="search-btn" aria-label={d.nav.searchLabel}><Icon name="search" /></button>
             <input type="search" aria-label={d.nav.searchLabel} placeholder={d.nav.search} value={query} onChange={(e) => setQuery(e.target.value)} />
           </form>
-          <div className="prefs">
-            <Suspense fallback={null}>
-              <LangSwitch />
-            </Suspense>
-            <CurrencySwitch />
-          </div>
+          <Prefs className="prefs prefs-desktop" />
           <Link className="icon-btn" href={to("/compte")} aria-label={d.nav.account}><Icon name="user" /></Link>
           <Link className="icon-btn" href={to("/panier")} aria-label={`${d.nav.cart} (${cart})`}>
             <Icon name="cart" />

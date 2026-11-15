@@ -251,3 +251,20 @@ footer a:hover { color: var(--gold-light); }
   .admin-form { padding: 18px 14px; }
   .form-actions { flex-wrap: wrap; }
 }
+
+/* ---------- Header mobile allégé : langue et devise passent dans le menu ---------- */
+.prefs-mobile { display: none; }
+@media (max-width: 760px) {
+  .prefs-desktop { display: none; }
+  .prefs-mobile { display: flex; gap: 10px; margin-top: 10px; padding-top: 16px; border-top: 1px solid rgba(246, 207, 143, 0.2); }
+  .prefs-mobile .switch a { padding: 8px 14px; font-size: 13px; border: 0; }
+  .main-header nav .prefs-mobile .switch a.on { background: var(--gold); color: #1c0d08; border: 0; border-radius: 0; padding: 8px 14px; display: inline-block; align-self: auto; }
+  .prefs-mobile .currency { padding: 8px 12px; font-size: 13px; max-width: none; }
+  .header-inner { gap: 12px; padding: 10px 16px; }
+  .header-actions { gap: 16px; padding-right: 6px; margin-left: auto; }
+  .brand { flex: 1; min-width: 0; }
+  .brand img { width: 48px; height: 48px; }
+  .brand-copy b { font-size: 18px; letter-spacing: 0.12em; }
+  .brand-copy small { font-size: 8px; margin-top: 5px; }
+  .icon-btn { font-size: 25px; }
+}
