@@ -28,7 +28,7 @@ async function Gate({ children }: { children: ReactNode }) {
         <strong>Administration</strong>
         <small className="admin-user">{session.email}</small>
         {nav.map((n) => <Link key={n.href} href={n.href}>{n.label}</Link>)}
-        <Link href="/" className="admin-back">← Voir le site</Link>
+        <Link href="/" className="admin-back">Voir le site</Link>
         <form action={logout}>
           <button type="submit" className="admin-logout">Se déconnecter</button>
         </form>

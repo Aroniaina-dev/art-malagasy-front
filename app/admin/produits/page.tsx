@@ -31,12 +31,12 @@ export default async function AdminProducts({ searchParams }: { searchParams: Pr
                 <tr key={a._id} className={a.archive === 1 ? "muted-row" : ""}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <td><img className="thumb" src={img} alt="" width={44} height={44} /></td>
-                  <td>{a.titre}{!a.photos?.length && <small className="warn"> (sans photo)</small>}</td>
-                  <td>{t?.label ?? "Non défini"}</td>
-                  <td>{size(a.idTaille)}</td>
-                  <td>{typeof a.prix === "number" ? formatAr(a.prix) : "Non défini"}</td>
-                  <td className={(a.nbrStock ?? 0) === 0 ? "bad" : (a.nbrStock ?? 0) <= 3 ? "warn" : ""}>{a.nbrStock ?? 0}</td>
-                  <td>{a.archive === 1 ? "Archivé" : "En ligne"}</td>
+                  <td data-label="Titre">{a.titre}{!a.photos?.length && <small className="warn"> (sans photo)</small>}</td>
+                  <td data-label="Type">{t?.label ?? "Non défini"}</td>
+                  <td data-label="Taille">{size(a.idTaille)}</td>
+                  <td data-label="Prix">{typeof a.prix === "number" ? formatAr(a.prix) : "Non défini"}</td>
+                  <td data-label="Stock" className={(a.nbrStock ?? 0) === 0 ? "bad" : (a.nbrStock ?? 0) <= 3 ? "warn" : ""}>{a.nbrStock ?? 0}</td>
+                  <td data-label="Statut">{a.archive === 1 ? "Archivé" : "En ligne"}</td>
                   <td className="row-actions">
                     <Link className="text-link" href={`/admin/produits/${a._id}`}>Modifier</Link>
                     <form action={setProductArchive}>

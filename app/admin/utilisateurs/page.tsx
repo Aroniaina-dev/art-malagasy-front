@@ -16,10 +16,10 @@ export default async function AdminUsers() {
           <tbody>
             {data.map((u) => (
               <tr key={u._id}>
-                <td>{[u.prenom, u.nom].filter(Boolean).join(" ") || "Non renseigné"}</td>
-                <td>{u.email}</td>
-                <td>{formatDate(u.createdAt)}</td>
-                <td>{u.role === 1 ? <span className="badge badge-confirmed">Admin</span> : "Client"}</td>
+                <td data-label="Nom">{[u.prenom, u.nom].filter(Boolean).join(" ") || "Non renseigné"}</td>
+                <td data-label="Email">{u.email}</td>
+                <td data-label="Inscrit le">{formatDate(u.createdAt)}</td>
+                <td data-label="Rôle">{u.role === 1 ? <span className="badge badge-confirmed">Admin</span> : "Client"}</td>
               </tr>
             ))}
           </tbody>

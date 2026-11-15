@@ -24,9 +24,9 @@ export default async function AdminBlog({ searchParams }: { searchParams: Promis
           <tbody>
             {data.map((p) => (
               <tr key={p._id}>
-                <td>{p.titre}</td>
-                <td>{formatDate(p.datePublication)}</td>
-                <td>{p.publie ? "Publié" : "Brouillon"}</td>
+                <td data-label="Titre">{p.titre}</td>
+                <td data-label="Date">{formatDate(p.datePublication)}</td>
+                <td data-label="Statut">{p.publie ? "Publié" : "Brouillon"}</td>
                 <td className="row-actions">
                   <Link className="text-link" href={`/admin/blog/${p._id}`}>Modifier</Link>
                   <form action={deletePost}>

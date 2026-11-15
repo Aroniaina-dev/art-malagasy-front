@@ -204,3 +204,50 @@ footer a:hover { color: var(--gold-light); }
   .story-visual { height: 280px; }
   .footer-inner { grid-template-columns: repeat(2, 1fr); gap: 25px; }
 }
+
+/* ---------- Formulaires : aucun champ ne dépasse de son conteneur ---------- */
+.contact-form, .contact-form label, .form-row > * { min-width: 0; }
+.contact-form input, .contact-form select, .contact-form textarea { width: 100%; min-width: 0; max-width: 100%; }
+.contact-form input[type="checkbox"], .contact-form input[type="radio"] { width: auto; }
+
+/* ---------- Administration sur mobile ---------- */
+@media (max-width: 900px) {
+  .admin { display: block; padding: 0 0 24px; }
+  .admin-main { padding: 18px 14px 0; }
+
+  /* Menu : une barre sombre collante, à faire défiler horizontalement */
+  .admin-nav { position: sticky; top: 0; z-index: 30; display: flex; align-items: center; gap: 6px; overflow-x: auto; padding: 10px 12px; border-radius: 0; background: var(--dark-band); box-shadow: 0 6px 18px rgba(20, 8, 7, 0.25); scrollbar-width: none; }
+  .admin-nav::-webkit-scrollbar { display: none; }
+  .admin-nav strong, .admin-user { display: none; }
+  .admin-nav a { flex: none; white-space: nowrap; padding: 8px 14px; border-radius: 30px; font-size: 13px; color: #f3e6d4; border: 1px solid rgba(246, 207, 143, 0.3); }
+  .admin-nav a:hover { background: rgba(246, 207, 143, 0.12); color: var(--gold-light); }
+  .admin-back { margin-top: 0; border-top: 1px solid rgba(246, 207, 143, 0.3); border-radius: 30px !important; color: #d5c1a8 !important; }
+  .admin-nav form { flex: none; }
+  .admin-logout { margin: 0; width: auto; white-space: nowrap; padding: 8px 14px; border-radius: 30px; font-size: 13px; background: var(--gold); border-color: var(--gold); color: #1c0d08; }
+
+  .admin-title { font-size: 23px; margin-bottom: 14px; }
+  .admin-bar { align-items: flex-start; }
+  .admin-bar .btn, .inline-form .btn { padding: 11px 18px; font-size: 13px; }
+  .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .stat { padding: 14px; }
+  .stat strong { font-size: 20px; overflow-wrap: anywhere; }
+  .ref-grid { grid-template-columns: 1fr; }
+
+  /* Tableaux : une carte par ligne, le nom de la colonne à gauche de chaque valeur */
+  .table-wrap { background: transparent; box-shadow: none; overflow: visible; }
+  .admin-table, .admin-table tbody, .admin-table tr, .admin-table td { display: block; width: 100%; }
+  .admin-table thead { display: none; }
+  .admin-table tr { background: #fff; border-radius: 14px; box-shadow: 0 5px 16px rgba(55, 20, 25, 0.06); padding: 12px 14px; margin-bottom: 10px; }
+  .admin-table td { padding: 5px 0; border: 0; display: flex; justify-content: space-between; align-items: center; gap: 14px; text-align: right; overflow-wrap: anywhere; }
+  .admin-table td[data-label]::before { content: attr(data-label); flex: none; font-size: 12px; font-weight: 700; color: var(--muted); text-align: left; }
+  .admin-table td:empty { display: none; }
+  .admin-table td.row-actions { justify-content: flex-start; flex-wrap: wrap; gap: 16px; margin-top: 8px; padding-top: 10px; border-top: 1px solid var(--line); }
+  .admin-table .thumb { width: 64px; height: 64px; }
+  .table-wrap .inline-form { width: 100%; }
+  .inline-form input { flex: 1; min-width: 0; }
+
+  .order-card summary { gap: 8px 14px; }
+  .status-form .inline-form { align-items: stretch; flex-direction: column; }
+  .admin-form { padding: 18px 14px; }
+  .form-actions { flex-wrap: wrap; }
+}
