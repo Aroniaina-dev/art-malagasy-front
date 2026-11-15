@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { dictionaries, href, type Lang } from "@/lib/dictionaries";
 import { BRAND, EMAIL, PHONE, WHATSAPP } from "@/lib/site";
@@ -29,7 +30,7 @@ export default function SiteShell({ lang, children }: { lang: Lang; children: Re
 
         <footer id="contact">
           <div className="footer-inner">
-            <div><div className="footer-brand">{BRAND}</div><p>{d.footer.tagline}<br />{d.footer.tagline2}</p></div>
+            <div><Image className="footer-logo" src="/logo-ikala.png" alt={BRAND} width={170} height={170} /><p>{d.footer.tagline}<br />{d.footer.tagline2}</p></div>
             <div><h4>{d.footer.shop}</h4><p><Link href={href(lang, "/boutique")}>{d.footer.allProducts}</Link><br /><Link href={href(lang, "/panier")}>{d.nav.cart}</Link><br /><Link href={href(lang, "/suivi")}>{d.footer.track}</Link></p></div>
             <div><h4>{d.footer.info}</h4><p><Link href={href(lang, "/a-propos")}>{d.nav.about}</Link><br /><Link href={href(lang, "/blog")}>{d.nav.blog}</Link><br /><Link href={href(lang, "/contact")}>{d.nav.contact}</Link></p></div>
             <div><h4>{d.footer.contact}</h4><p>Madagascar<br />{PHONE}<br />{EMAIL}</p></div>

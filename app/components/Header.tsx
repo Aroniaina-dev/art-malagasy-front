@@ -102,7 +102,7 @@ export default function Header() {
           <Icon name="menu" />
         </button>
         <Link className="brand" href={to("/")} aria-label={BRAND}>
-          <Image src="/logo-ikala.jpg" alt="" width={64} height={64} priority />
+          <Image src="/logo-ikala.png" alt="" width={64} height={64} priority />
           <span className="brand-copy"><b>IKALA</b><small>MANJ’ART</small></span>
         </Link>
         <nav className={open ? "open" : ""} onClick={() => setOpen(false)}>

@@ -342,3 +342,10 @@ footer a:hover { color: var(--gold-light); }
   .pd-specs dt { width: 120px; }
   .pd-buy .btn { flex: 1; }
 }
+
+/* Logo du footer : le fond noir de l'image se fond dans le footer */
+.footer-logo { width: 180px; height: 180px; object-fit: contain; margin: -10px 0 10px -8px; display: block; }
+@media (max-width: 760px) { .footer-logo { width: 140px; height: 140px; } .footer-inner > div:first-child { grid-column: 1 / -1; } }
+
+/* Le logo est un PNG à fond transparent : plus besoin de le fondre ni de l'arrondir. */
+.brand img { mix-blend-mode: normal; border-radius: 0; }
