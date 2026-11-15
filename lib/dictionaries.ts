@@ -11,9 +11,9 @@ export const href = (lang: Lang, path: string) => `/${lang}${path === "/" ? "" :
 const fr = {
   meta: {
     title: "ArtMadagascar | L'artisanat malgache, notre fierté",
-    description: "Découvrez l'artisanat malgache : sacs en raphia, bijoux, sculptures, textiles et créations faites à la main, expédiés à Madagascar et à l'international.",
+    description: "Découvrez l'artisanat malgache : sacs en raphia, bijoux, sculptures, textiles et créations faites à la main, expédiés à l'international.",
   },
-  topbar: { shipping: "Livraison à Madagascar et à l'international", handmade: "Artisanat 100% Malgache" },
+  topbar: { shipping: "Livraison internationale", handmade: "Artisanat 100% Malgache" },
   nav: { home: "Accueil", shop: "Boutique", about: "À propos", blog: "Blog", contact: "Contact", menu: "Ouvrir le menu", account: "Mon compte", cart: "Panier", search: "Rechercher un article...", searchLabel: "Rechercher", language: "Langue", currency: "Devise" },
   hero: {
     eyebrow: "L'artisanat de nos régions",
@@ -24,7 +24,7 @@ const fr = {
   },
   benefits: [
     { icon: "shield", title: "Paiement sécurisé", text: "Achetez en toute confiance" },
-    { icon: "truck", title: "Livraison soignée", text: "À Madagascar et à l'international" },
+    { icon: "truck", title: "Livraison soignée", text: "Expédition à l'international" },
     { icon: "headset", title: "Service client réactif", text: "Nous sommes là pour vous" },
     { icon: "heart", title: "Soutien aux artisans", text: "Ensemble, valorisons notre culture" },
   ],
@@ -204,7 +204,7 @@ const fr = {
       { icon: "heart", title: "Fait main", text: "Chaque pièce est façonnée à la main, sans production en série." },
       { icon: "shield", title: "Authenticité", text: "Nous travaillons directement avec les artisans et ateliers locaux." },
       { icon: "star", title: "Juste rémunération", text: "Une part équitable du prix revient à celles et ceux qui créent." },
-      { icon: "truck", title: "Livraison soignée", text: "Vos articles sont emballés avec soin et expédiés à Madagascar comme à l'international." },
+      { icon: "truck", title: "Livraison soignée", text: "Vos articles sont emballés avec soin et expédiés à l'international." },
     ],
   },
   blog: {
@@ -248,9 +248,9 @@ export type Dict = typeof fr;
 const en: Dict = {
   meta: {
     title: "ArtMadagascar | Handmade crafts from Madagascar",
-    description: "Discover Malagasy handicrafts: raffia bags, jewellery, wood carvings, textiles and handmade pieces, shipped within Madagascar and worldwide.",
+    description: "Discover Malagasy handicrafts: raffia bags, jewellery, wood carvings, textiles and handmade pieces, shipped worldwide.",
   },
-  topbar: { shipping: "Shipping within Madagascar and worldwide", handmade: "100% Malagasy handmade" },
+  topbar: { shipping: "Worldwide shipping", handmade: "100% Malagasy handmade" },
   nav: { home: "Home", shop: "Shop", about: "About", blog: "Blog", contact: "Contact", menu: "Open menu", account: "My account", cart: "Cart", search: "Search for an item...", searchLabel: "Search", language: "Language", currency: "Currency" },
   hero: {
     eyebrow: "Crafts from our regions",
@@ -261,7 +261,7 @@ const en: Dict = {
   },
   benefits: [
     { icon: "shield", title: "Secure payment", text: "Shop with confidence" },
-    { icon: "truck", title: "Careful shipping", text: "Madagascar and worldwide" },
+    { icon: "truck", title: "Careful shipping", text: "Shipped worldwide" },
     { icon: "headset", title: "Responsive support", text: "We are here to help" },
     { icon: "heart", title: "Supporting artisans", text: "Together, we celebrate our culture" },
   ],
@@ -441,7 +441,7 @@ const en: Dict = {
       { icon: "heart", title: "Handmade", text: "Every piece is shaped by hand, never mass-produced." },
       { icon: "shield", title: "Authenticity", text: "We work directly with local artisans and workshops." },
       { icon: "star", title: "Fair pay", text: "A fair share of the price goes to the people who make each piece." },
-      { icon: "truck", title: "Careful shipping", text: "Your items are carefully packed and shipped within Madagascar and worldwide." },
+      { icon: "truck", title: "Careful shipping", text: "Your items are carefully packed and shipped worldwide." },
     ],
   },
   blog: {
