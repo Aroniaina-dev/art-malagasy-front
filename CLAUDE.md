@@ -18,7 +18,7 @@ npx tsc --noEmit # type check
 
 No test runner. To run the full stack, start the back too (`npm run dev` in `art-malagasy-back/`, port 4000, needs its git-ignored `config.env`); `node scripts/seed.js` there (with `ADMIN_EMAIL` / `ADMIN_PASSWORD`) creates categories, sample products, blog posts and the admin account.
 
-Env (`.env.local`, git-ignored): `API_URL` (default `http://localhost:4000/api/v1`), `FILES_URL` (origin serving the back's `/files` uploads), `JWT_SECRET` (must equal the back's; used only to verify token signatures).
+Env (`.env.local`, git-ignored): `API_URL` (default `http://localhost:4000/api/v1`; uploaded photos are read from the same origin, under `/files`), `JWT_SECRET` (must equal the back's; used only to verify token signatures).
 
 ## Next.js version caveat
 

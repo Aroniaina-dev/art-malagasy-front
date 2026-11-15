@@ -5,7 +5,15 @@ if (process.env.NODE_ENV === "production" && !process.env.API_URL) {
 }
 
 const API_URL = (process.env.API_URL ?? "http://localhost:4000/api/v1").replace(/\/$/, "");
-const FILES_URL = (process.env.FILES_URL ?? "http://localhost:4000").replace(/\/$/, "");
+// Les photos importées sont servies par le même serveur que l'API (dossier /files) :
+// on déduit donc leur adresse de API_URL, sans variable séparée à tenir à jour.
+const FILES_URL = (() => {
+  try {
+    return new URL(API_URL).origin;
+  } catch {
+    return "http://localhost:4000";
+  }
+})();
 
 export class ApiError extends Error {
   constructor(message: string, public status: number) {
