@@ -72,7 +72,7 @@ function CurrencySwitch() {
   const { currency, setCurrency, d } = useI18n();
   return (
     <select className="currency" aria-label={d.nav.currency} value={currency} onChange={(e) => setCurrency(e.target.value as Currency)}>
-      {currencies.map((c) => <option key={c} value={c}>{c === "MGA" ? "Ar (MGA)" : c === "EUR" ? "€ (EUR)" : "$ (USD)"}</option>)}
+      {currencies.map((c) => <option key={c} value={c}>{c === "EUR" ? "€ (EUR)" : "$ (USD)"}</option>)}
     </select>
   );
 }

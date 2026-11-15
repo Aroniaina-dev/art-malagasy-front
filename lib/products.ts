@@ -30,12 +30,14 @@ export type Product = {
   colors: string[];
   sizeLabel?: string;
   colorTypeLabel?: string;
-  price: number | null; // null = « sur demande » (non commandable)
+  price: number | null; // en euros ; null = « sur demande » (non commandable)
   stock: number;
   inStock: boolean;
 };
 
-export const formatAr = (n: number) => `${n.toLocaleString("fr-FR").replace(/[  ]/g, " ")} Ar`;
+/** Montant en euros (devise de référence : c'est ce que le back enregistre dans `prix`). */
+export const formatEur = (n: number, lang: "fr" | "en" = "fr") =>
+  new Intl.NumberFormat(lang === "fr" ? "fr-FR" : "en-IE", { style: "currency", currency: "EUR" }).format(n);
 
 /** Les images externes autres qu'Unsplash ne passent pas par l'optimiseur de Next. */
 export const isOptimizable = (src: string) => src.startsWith("/") || src.startsWith("https://images.unsplash.com/");

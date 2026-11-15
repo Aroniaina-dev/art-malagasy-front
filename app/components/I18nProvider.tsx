@@ -3,15 +3,14 @@
 import { createContext, useCallback, useContext, useMemo, useSyncExternalStore, type ReactNode } from "react";
 import { href as buildHref, type Dict, type Lang } from "@/lib/dictionaries";
 
-export type Currency = "MGA" | "EUR" | "USD";
-export const currencies: Currency[] = ["EUR", "USD", "MGA"];
+export type Currency = "EUR" | "USD";
+export const currencies: Currency[] = ["EUR", "USD"];
 
-/* Taux indicatifs (ariary pour 1 unité), ajustables par variables d'environnement.
-   La commande est toujours enregistrée et facturée en ariary par le back. */
+/* Les prix sont saisis, enregistrés et facturés en euros. Le dollar n'est qu'un affichage indicatif,
+   au taux NEXT_PUBLIC_EUR_TO_USD (dollars pour 1 euro). */
 export const RATES: Record<Currency, number> = {
-  MGA: 1,
-  EUR: Number(process.env.NEXT_PUBLIC_RATE_EUR) || 5100,
-  USD: Number(process.env.NEXT_PUBLIC_RATE_USD) || 4500,
+  EUR: 1,
+  USD: Number(process.env.NEXT_PUBLIC_EUR_TO_USD) || 1.08,
 };
 
 const KEY = "artmada-currency";
@@ -39,10 +38,10 @@ type Ctx = {
   to: (path: string) => string;
   currency: Currency;
   setCurrency: (c: Currency) => void;
-  /** Prix en ariary → texte dans la devise choisie. */
-  money: (ariary: number) => string;
-  /** Toujours en ariary (montant réellement facturé). */
-  ariary: (n: number) => string;
+  /** Prix en euros → texte dans la devise choisie. */
+  money: (euros: number) => string;
+  /** Toujours en euros (montant réellement facturé). */
+  euros: (n: number) => string;
 };
 
 const I18nContext = createContext<Ctx | null>(null);
@@ -53,10 +52,8 @@ export function useI18n() {
   return ctx;
 }
 
-const formatAriary = (n: number, lang: Lang) => `${Math.round(n).toLocaleString(lang === "fr" ? "fr-FR" : "en-US").replace(/[  ]/g, " ")} Ar`;
-
 export default function I18nProvider({ lang, d, children }: { lang: Lang; d: Dict; children: ReactNode }) {
-  // La boutique vend à l'international : l'euro est la devise affichée par défaut, quelle que soit la langue.
+  // L'euro est la devise de référence et celle affichée par défaut.
   const fallback: Currency = "EUR";
   const stored = useSyncExternalStore(subscribe, read, () => "");
   const currency = (currencies as string[]).includes(stored) ? (stored as Currency) : fallback;
@@ -69,18 +66,15 @@ export default function I18nProvider({ lang, d, children }: { lang: Lang; d: Dic
   }, []);
 
   const value = useMemo<Ctx>(() => {
-    const locale = lang === "fr" ? "fr-FR" : "en-US";
+    const locale = lang === "fr" ? "fr-FR" : "en-IE";
     return {
       lang,
       d,
       to: (path) => buildHref(lang, path),
       currency,
       setCurrency,
-      ariary: (n) => formatAriary(n, lang),
-      money: (n) =>
-        currency === "MGA"
-          ? formatAriary(n, lang)
-          : new Intl.NumberFormat(locale, { style: "currency", currency, maximumFractionDigits: 2 }).format(n / RATES[currency]),
+      euros: (n) => new Intl.NumberFormat(locale, { style: "currency", currency: "EUR" }).format(n),
+      money: (n) => new Intl.NumberFormat(locale, { style: "currency", currency }).format(n * RATES[currency]),
     };
   }, [lang, d, currency, setCurrency]);
 

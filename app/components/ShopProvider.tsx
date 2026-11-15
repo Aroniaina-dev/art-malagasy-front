@@ -18,7 +18,7 @@ type Shop = {
 };
 
 const ShopContext = createContext<Shop | null>(null);
-const STORAGE_KEY = "artmada-cart";
+const STORAGE_KEY = "artmada-cart-v2"; // v2 : prix en euros (les anciens paniers étaient en ariary)
 
 /* Le panier vit dans localStorage (lu via useSyncExternalStore : pas de flash ni de setState en effet).
    Les prix et le stock sont de toute façon revérifiés par le back à la commande. */

@@ -7,7 +7,7 @@ import { api, ApiError } from "@/lib/api";
 import { fill, href } from "@/lib/dictionaries";
 import { getI18n } from "@/lib/i18n";
 import { formatDate } from "@/lib/posts";
-import { formatAr } from "@/lib/products";
+import { formatEur } from "@/lib/products";
 
 export const metadata: Metadata = { robots: { index: false } };
 
@@ -62,13 +62,13 @@ async function Tracking({ params, searchParams }: Props) {
         ))}
       </ol>
 
-      {/* Montants en ariary : c'est la devise réellement facturée par le back. */}
+      {/* Montants en euros : c'est la devise de référence, celle de la commande. */}
       <ul className="order-lines">
         {order.items.map((i, k) => (
-          <li key={k}><span>{i.quantite} × {i.titre}</span><span>{formatAr(i.sousTotal)}</span></li>
+          <li key={k}><span>{i.quantite} × {i.titre}</span><span>{formatEur(i.sousTotal, lang)}</span></li>
         ))}
       </ul>
-      <p><strong>{t.total} : {formatAr(order.totalAmount)}</strong></p>
+      <p><strong>{t.total} : {formatEur(order.totalAmount, lang)}</strong></p>
 
       {order.history.length > 0 && (
         <ul className="history">

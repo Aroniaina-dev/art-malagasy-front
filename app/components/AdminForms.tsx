@@ -43,7 +43,7 @@ export function ProductForm({ product, types, sizes, colorTypes }: ProductFormPr
         <Select name="idTypeCouleur" label="Type de couleur" options={colorTypes} value={product?.idTypeCouleur} />
       </div>
       <div className="form-row">
-        <label>Prix (Ar)<input name="prix" type="number" min={1} defaultValue={product?.prix ?? ""} required /></label>
+        <label>Prix (€)<input name="prix" type="number" min={0.01} step={0.01} inputMode="decimal" defaultValue={product?.prix ?? ""} required /></label>
         <label>Stock<input name="nbrStock" type="number" min={0} defaultValue={product?.nbrStock ?? 1} required /></label>
       </div>
       <label>Couleurs (facultatif, séparées par des virgules)<input name="couleur" defaultValue={product?.couleur} placeholder="rouge, beige" /></label>

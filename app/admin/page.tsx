@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { api } from "@/lib/api";
 import { getAllProducts, safe } from "@/lib/catalog";
-import { formatAr } from "@/lib/products";
+import { formatEur } from "@/lib/products";
 import { requireAdmin } from "@/lib/session";
 
 type Order = { status: string; paymentStatus: string; totalAmount: number };
@@ -26,7 +26,7 @@ export default async function AdminHome() {
     { label: "Messages non lus", value: messages ? messages.nonLus : "Indisponible", href: "/admin/messages", hot: (messages?.nonLus ?? 0) > 0 },
     { label: "Produits (stock ≤ 3)", value: products ? `${active.length} (${lowStock})` : "Indisponible", href: "/admin/produits", hot: lowStock > 0 },
     { label: "Commandes au total", value: orders ? orders.total : "Indisponible", href: "/admin/commandes" },
-    { label: "Encaissé (100 dernières)", value: formatAr(revenue), href: "/admin/commandes" },
+    { label: "Encaissé (100 dernières)", value: formatEur(revenue), href: "/admin/commandes" },
     { label: "Utilisateurs", value: users ? users.results : "Indisponible", href: "/admin/utilisateurs" },
   ];
 

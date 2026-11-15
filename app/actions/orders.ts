@@ -7,7 +7,7 @@ import { dictionaries, isLang, type Lang } from "@/lib/dictionaries";
 
 export type OrderState = { error?: string };
 
-/** Commande invitée : le back recalcule prix et total depuis la base (en ariary). */
+/** Commande invitée : le back recalcule prix et total depuis la base (en euros). */
 export async function placeOrder(_prev: OrderState, form: FormData): Promise<OrderState> {
   const l = String(form.get("lang") ?? "");
   const lang: Lang = isLang(l) ? l : "fr";

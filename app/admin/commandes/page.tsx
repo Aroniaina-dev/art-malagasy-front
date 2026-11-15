@@ -1,6 +1,6 @@
 import { api } from "@/lib/api";
 import { formatDate } from "@/lib/posts";
-import { formatAr } from "@/lib/products";
+import { formatEur } from "@/lib/products";
 import { requireAdmin } from "@/lib/session";
 import { advanceOrder, confirmPayment } from "../../actions/admin";
 import AdminError from "../../components/AdminError";
@@ -38,13 +38,13 @@ export default async function AdminOrders({ searchParams }: { searchParams: Prom
                 <strong>#{o._id.slice(-6).toUpperCase()}</strong>
                 <span>{o.customer.prenom} {o.customer.nom}</span>
                 <span>{formatDate(o.createdAt)}</span>
-                <strong>{formatAr(o.totalAmount)}</strong>
+                <strong>{formatEur(o.totalAmount)}</strong>
                 <span className={`badge badge-${o.paymentStatus === "paid" ? "delivered" : o.status}`}>
                   {o.paymentStatus === "paid" ? "Payée" : stepLabel[o.status]}
                 </span>
               </summary>
               <ul className="order-lines">
-                {o.items.map((i, k) => <li key={k}><span>{i.quantite} × {i.titre}</span><span>{formatAr(i.sousTotal)}</span></li>)}
+                {o.items.map((i, k) => <li key={k}><span>{i.quantite} × {i.titre}</span><span>{formatEur(i.sousTotal)}</span></li>)}
               </ul>
               <p className="muted-small">
                 {o.customer.adresse}, {o.customer.ville} · {o.customer.telephone}{o.customer.email ? ` · ${o.customer.email}` : ""}

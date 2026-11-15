@@ -11,7 +11,7 @@ import { useShop } from "./ShopProvider";
 function ProductCard({ p }: { p: Product }) {
   const [liked, setLiked] = useState(false);
   const { addToCart } = useShop();
-  const { d, money, ariary, currency } = useI18n();
+  const { d, money, euros, currency } = useI18n();
   const orderable = p.inStock && p.price !== null;
   const meta = [
     p.sizeLabel && label(d, p.sizeLabel),
@@ -30,7 +30,7 @@ function ProductCard({ p }: { p: Product }) {
         <h3>{p.name}</h3>
         {meta.length > 0 && <p className="product-meta">{meta.join(" · ")}</p>}
         <div className="price-row">
-          <span className="price" title={p.price !== null && currency !== "MGA" ? ariary(p.price) : undefined}>
+          <span className="price" title={p.price !== null && currency !== "EUR" ? euros(p.price) : undefined}>
             {p.price === null ? d.product.onRequest : money(p.price)}
           </span>
           <button

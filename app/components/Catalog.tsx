@@ -4,16 +4,15 @@ import Image from "next/image";
 import { useMemo, useState } from "react";
 import { fill, label } from "@/lib/dictionaries";
 import { hasCategoryImage, type Category, type Product, type Ref } from "@/lib/products";
-import { RATES, useI18n } from "./I18nProvider";
+import { useI18n } from "./I18nProvider";
 import { Icon } from "./Icons";
 import ProductGrid from "./ProductGrid";
 import { useShop } from "./ShopProvider";
 
 const PAGE_SIZE = 8;
 
-// Tranches de prix définies en euros (clientèle internationale), converties en ariary pour filtrer :
-// le prix de référence du back est en ariary. Les libellés s'affichent dans la devise choisie.
-const EUR_BOUNDS = [5, 10, 20].map((e) => e * RATES.EUR);
+// Tranches de prix en euros, la devise de référence. Les libellés s'affichent dans la devise choisie.
+const EUR_BOUNDS = [5, 10, 20];
 const priceRanges = [
   { id: "r0", min: -Infinity, max: EUR_BOUNDS[0] },
   { id: "r1", min: EUR_BOUNDS[0], max: EUR_BOUNDS[1] },

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { fileUrl } from "@/lib/api";
 import { getAllProducts, getCategories, getSizes } from "@/lib/catalog";
-import { formatAr } from "@/lib/products";
+import { formatEur } from "@/lib/products";
 import { requireAdmin } from "@/lib/session";
 import { deleteProduct, setProductArchive } from "../../actions/admin";
 import AdminError from "../../components/AdminError";
@@ -34,7 +34,7 @@ export default async function AdminProducts({ searchParams }: { searchParams: Pr
                   <td data-label="Titre">{a.titre}{!a.photos?.length && <small className="warn"> (sans photo)</small>}</td>
                   <td data-label="Type">{t?.label ?? "Non défini"}</td>
                   <td data-label="Taille">{size(a.idTaille)}</td>
-                  <td data-label="Prix">{typeof a.prix === "number" ? formatAr(a.prix) : "Non défini"}</td>
+                  <td data-label="Prix">{typeof a.prix === "number" ? formatEur(a.prix) : "Non défini"}</td>
                   <td data-label="Stock" className={(a.nbrStock ?? 0) === 0 ? "bad" : (a.nbrStock ?? 0) <= 3 ? "warn" : ""}>{a.nbrStock ?? 0}</td>
                   <td data-label="Statut">{a.archive === 1 ? "Archivé" : "En ligne"}</td>
                   <td className="row-actions">

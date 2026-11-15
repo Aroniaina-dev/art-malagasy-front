@@ -11,7 +11,7 @@ import { useShop } from "./ShopProvider";
 
 export default function CartView() {
   const { items, total, setQty, clearCart } = useShop();
-  const { d, lang, to, money, ariary, currency } = useI18n();
+  const { d, lang, to, money, euros, currency } = useI18n();
   const c = d.cart;
   const [state, action, pending] = useActionState<OrderState, FormData>(placeOrder, {});
 
@@ -49,7 +49,7 @@ export default function CartView() {
       <aside className="cart-summary">
         <h3>{c.summary}</h3>
         <p className="cart-total"><span>{c.total}</span><strong>{money(total)}</strong></p>
-        {currency !== "MGA" && <p className="muted-small">{fill(c.billed, { amount: ariary(total) })}</p>}
+        {currency !== "EUR" && <p className="muted-small">{fill(c.billed, { amount: euros(total) })}</p>}
         <p className="muted-small">{c.noAccount}</p>
 
         <form className="contact-form checkout" action={action}>

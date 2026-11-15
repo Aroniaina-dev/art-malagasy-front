@@ -34,7 +34,8 @@ const imageUrl = z
 const productSchema = z.object({
   titre: z.string().trim().min(2, "Titre requis").max(150),
   description: z.string().trim().min(3, "Description requise").max(2000),
-  prix: z.coerce.number({ error: "Prix invalide" }).int("Prix invalide").min(1, "Prix invalide"),
+  // en euros, deux décimales au plus
+  prix: z.coerce.number({ error: "Prix invalide" }).min(0.01, "Prix invalide").max(100000, "Prix invalide").multipleOf(0.01, "Prix : deux décimales au maximum"),
   nbrStock: z.coerce.number({ error: "Stock invalide" }).int("Stock invalide").min(0, "Stock invalide"),
   idTypeProduit: z.string().min(1, "Type de produit requis"),
   idTaille: z.string().min(1, "Taille requise"),
