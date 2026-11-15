@@ -8,7 +8,7 @@ export const currencies: Currency[] = ["EUR", "USD", "MGA"];
 
 /* Taux indicatifs (ariary pour 1 unité), ajustables par variables d'environnement.
    La commande est toujours enregistrée et facturée en ariary par le back. */
-const RATES: Record<Currency, number> = {
+export const RATES: Record<Currency, number> = {
   MGA: 1,
   EUR: Number(process.env.NEXT_PUBLIC_RATE_EUR) || 5100,
   USD: Number(process.env.NEXT_PUBLIC_RATE_USD) || 4500,
@@ -56,8 +56,8 @@ export function useI18n() {
 const formatAriary = (n: number, lang: Lang) => `${Math.round(n).toLocaleString(lang === "fr" ? "fr-FR" : "en-US").replace(/[  ]/g, " ")} Ar`;
 
 export default function I18nProvider({ lang, d, children }: { lang: Lang; d: Dict; children: ReactNode }) {
-  // Par défaut : ariary en français, euro en anglais (visiteurs étrangers).
-  const fallback: Currency = lang === "fr" ? "MGA" : "EUR";
+  // La boutique vend à l'international : l'euro est la devise affichée par défaut, quelle que soit la langue.
+  const fallback: Currency = "EUR";
   const stored = useSyncExternalStore(subscribe, read, () => "");
   const currency = (currencies as string[]).includes(stored) ? (stored as Currency) : fallback;
 

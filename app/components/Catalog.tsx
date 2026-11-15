@@ -4,20 +4,23 @@ import Image from "next/image";
 import { useMemo, useState } from "react";
 import { fill, label } from "@/lib/dictionaries";
 import { hasCategoryImage, type Category, type Product, type Ref } from "@/lib/products";
-import { useI18n } from "./I18nProvider";
+import { RATES, useI18n } from "./I18nProvider";
 import { Icon } from "./Icons";
 import ProductGrid from "./ProductGrid";
 import { useShop } from "./ShopProvider";
 
 const PAGE_SIZE = 8;
 
-// Les tranches sont exprimées en ariary (prix de référence du back).
+// Tranches de prix définies en euros (clientèle internationale), converties en ariary pour filtrer :
+// le prix de référence du back est en ariary. Les libellés s'affichent dans la devise choisie.
+const EUR_BOUNDS = [5, 10, 20].map((e) => e * RATES.EUR);
 const priceRanges = [
-  { id: "lt20", key: "priceLt20", test: (p: Product) => p.price !== null && p.price < 20000 },
-  { id: "20-50", key: "price20to50", test: (p: Product) => p.price !== null && p.price >= 20000 && p.price <= 50000 },
-  { id: "50-100", key: "price50to100", test: (p: Product) => p.price !== null && p.price > 50000 && p.price <= 100000 },
-  { id: "gt100", key: "priceGt100", test: (p: Product) => p.price !== null && p.price > 100000 },
-] as const;
+  { id: "r0", min: -Infinity, max: EUR_BOUNDS[0] },
+  { id: "r1", min: EUR_BOUNDS[0], max: EUR_BOUNDS[1] },
+  { id: "r2", min: EUR_BOUNDS[1], max: EUR_BOUNDS[2] },
+  { id: "r3", min: EUR_BOUNDS[2], max: Infinity },
+];
+const inRange = (r: (typeof priceRanges)[number], p: Product) => p.price !== null && p.price >= r.min && p.price < r.max;
 
 const sorts = {
   recent: { key: "sortRecent", fn: () => 0 }, // l'API renvoie déjà les plus récents d'abord (tri stable)
@@ -35,8 +38,10 @@ type Props = { products: Product[]; categories: Category[]; sizes: Ref[]; colorT
 
 export default function Catalog({ products, categories, sizes, colorTypes }: Props) {
   const { query, setQuery } = useShop();
-  const { d } = useI18n();
+  const { d, money } = useI18n();
   const s = d.shop;
+  const rangeLabel = (r: (typeof priceRanges)[number]) =>
+    r.min === -Infinity ? fill(s.priceUnder, { a: money(r.max) }) : r.max === Infinity ? fill(s.priceOver, { a: money(r.min) }) : fill(s.priceBetween, { a: money(r.min), b: money(r.max) });
   const [cat, setCat] = useState<string | null>(null);
   const [size, setSize] = useState<string | null>(null);
   const [colorType, setColorType] = useState<string | null>(null);
@@ -69,7 +74,7 @@ export default function Catalog({ products, categories, sizes, colorTypes }: Pro
     return products
       .filter((p) => (!cat || p.category === cat) && (!size || p.size === size) && (!colorType || p.colorType === colorType))
       .filter((p) => !color || p.colors.some((c) => c.toLocaleLowerCase("fr") === color))
-      .filter((p) => (!range || range.test(p)) && (!stockOnly || p.inStock))
+      .filter((p) => (!range || inRange(range, p)) && (!stockOnly || p.inStock))
       .filter((p) => haystack(p).includes(term))
       .sort(sorts[sort].fn);
   }, [products, cat, size, colorType, color, price, stockOnly, term, sort, d]);
@@ -138,7 +143,7 @@ export default function Catalog({ products, categories, sizes, colorTypes }: Pro
               {priceRanges.map((r) => (
                 <label key={r.id}>
                   <input type="radio" name="price" checked={price === r.id} onChange={() => { setPrice(r.id); setPage(1); }} />
-                  <span>{s[r.key]}</span>
+                  <span>{rangeLabel(r)}</span>
                 </label>
               ))}
             </div>
