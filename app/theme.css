@@ -70,6 +70,8 @@ h1, h2 { font-weight: 500; }
 
 .eyebrow, .section-kicker { display: flex; align-items: center; gap: 12px; color: var(--bronze); text-transform: uppercase; letter-spacing: 0.24em; font-size: 10px; font-weight: 700; }
 .hero .eyebrow, .page-hero .eyebrow { color: var(--gold-light); }
+/* Sur-titre du hero : Cormorant Garamond, doré */
+.hero .eyebrow { font-family: var(--font-cormorant), "Cormorant Garamond", serif; font-size: 18px; font-weight: 600; letter-spacing: 2px; color: #d99a36; }
 .hero .eyebrow::before { content: ""; height: 1px; width: 38px; background: var(--gold); }
 
 /* ---------- Bandeau de confiance ---------- */
