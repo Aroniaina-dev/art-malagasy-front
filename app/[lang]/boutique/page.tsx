@@ -30,7 +30,7 @@ export default async function BoutiquePage() {
   return (
     <>
       <section className="shop-hero">
-        <Image className="shop-hero-bg" src="/hero.png" alt="" fill priority sizes="100vw" />
+        <Image className="shop-hero-bg" src="/hero-ikala.jpg" alt="" fill priority sizes="100vw" />
         <div className="shop-hero-inner">
           <h1>{d.shop.title1} <span>{d.shop.title2}</span></h1>
           <p>{d.shop.intro}</p>

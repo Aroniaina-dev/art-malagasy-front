@@ -13,7 +13,7 @@ export default async function Home() {
   return (
     <>
       <section className="hero">
-        <Image className="hero-bg" src="/hero.png" alt="" fill priority sizes="100vw" />
+        <Image className="hero-bg" src="/hero-ikala.jpg" alt="" fill priority sizes="100vw" />
         <div className="hero-inner">
           <div className="eyebrow">{d.hero.eyebrow}</div>
           <h1>{d.hero.title1} <span>{d.hero.title2}</span></h1>

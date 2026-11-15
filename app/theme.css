@@ -60,7 +60,7 @@ h1, h2 { font-weight: 500; }
 
 /* ---------- Hero (l'image de fond reste celle d'origine) ---------- */
 .hero { min-height: 640px; color: #fff; background: #180c0c; }
-.hero-bg { object-position: 72% center; }
+.hero-bg { object-position: 60% center; }
 .hero::after { background: linear-gradient(90deg, rgba(18, 8, 9, 0.97) 0%, rgba(27, 10, 10, 0.86) 30%, rgba(30, 11, 9, 0.25) 62%, rgba(16, 8, 6, 0.08) 100%); }
 .hero-inner { padding: 70px 5.2%; max-width: none; }
 .hero h1 { color: #fff; max-width: 600px; letter-spacing: -0.035em; line-height: 1.05; margin: 22px 0 20px; }
