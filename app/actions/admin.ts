@@ -44,31 +44,45 @@ const productSchema = z.object({
   photoUrl: imageUrl.optional(),
 });
 
+const UPLOADS_OFF =
+  "Le serveur n'accepte pas encore l'envoi de fichiers photo (version du back trop ancienne). Indiquez une URL d'image à la place, ou mettez le back à jour.";
+
 export async function saveProduct(_prev: FormState, form: FormData): Promise<FormState> {
   const session = await requireAdmin();
+  const token = session.token;
   const id = String(form.get("id") ?? "");
   const parsed = productSchema.safeParse(Object.fromEntries(form));
   if (!parsed.success) return { error: parsed.error.issues[0].message };
   const { photoUrl, couleur, ...d } = parsed.data;
   const couleurs = (couleur ?? "").split(",").map((c) => c.trim()).filter(Boolean);
   const uploads = files(form, "photos");
-  const path = id ? `/produit/${id}?source=produit` : "/produit?source=produit";
-  const method = id ? "PUT" : "POST";
+  if (uploads.some((f) => !/^image\/(jpeg|png|webp)$/.test(f.type))) return { error: "Photos : formats acceptés JPG, PNG ou WebP." };
 
   try {
     if (uploads.length) {
-      // multipart : nécessite l'upload côté back (middleware multer sur /produit)
+      // Envoi des fichiers au back (multipart, champ "photos").
       const body = new FormData();
       for (const [k, v] of Object.entries(d)) body.append(k, String(v));
       couleurs.forEach((c) => body.append("couleur", c));
       uploads.forEach((f) => body.append("photos", f));
-      await api(path, { method, token: session.token, form: body });
+      try {
+        await api(id ? `/produit/${id}?source=produit` : "/produit?source=produit", { method: id ? "PUT" : "POST", token, form: body });
+      } catch (e) {
+        // un back qui ne décode pas le multipart voit un formulaire vide et réclame tous les champs
+        if (e instanceof ApiError && /is required/i.test(e.message)) return { error: UPLOADS_OFF };
+        throw e;
+      }
     } else {
-      await api(path, {
-        method,
-        token: session.token,
-        json: { ...d, couleur: couleurs, ...(photoUrl ? { photos: [photoUrl] } : {}) },
-      });
+      const fields = { ...d, couleur: couleurs };
+      let productId = id;
+      if (id) {
+        await api(`/produit/${id}`, { method: "PUT", token, json: fields });
+      } else {
+        const created = await api<{ data: { _id: string } }>("/produit", { method: "POST", token, json: { ...fields, ...(photoUrl ? { photos: [photoUrl] } : {}) } });
+        productId = created.data._id;
+      }
+      // Photo par URL : envoyée aussi dans une mise à jour, car d'anciennes versions du back l'ignorent à la création.
+      if (photoUrl) await api(`/produit/${productId}`, { method: "PUT", token, json: { photos: [photoUrl] } });
     }
   } catch (e) {
     return { error: msg(e) };

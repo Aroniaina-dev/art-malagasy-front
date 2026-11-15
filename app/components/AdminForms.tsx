@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, type ChangeEvent } from "react";
 import type { Ref } from "@/lib/products";
 import { savePost, saveProduct } from "../actions/admin";
 import type { FormState } from "../actions/contact";
@@ -17,6 +17,35 @@ export type ProductValues = {
   idTypeCouleur: string;
   couleur: string;
 };
+
+/** Réduit une photo à 1600 px de côté au plus et la réencode en JPEG : un envoi doit rester sous 4 Mo au total. */
+async function shrink(file: File): Promise<File> {
+  try {
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(1, 1600 / Math.max(bitmap.width, bitmap.height));
+    if (scale === 1 && file.size < 400_000) return file;
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(bitmap.width * scale);
+    canvas.height = Math.round(bitmap.height * scale);
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return file;
+    ctx.fillStyle = "#fff"; // fond blanc pour les PNG transparents
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    const blob = await new Promise<Blob | null>((res) => canvas.toBlob(res, "image/jpeg", 0.85));
+    return blob && blob.size < file.size ? new File([blob], file.name.replace(/\.\w+$/, "") + ".jpg", { type: "image/jpeg" }) : file;
+  } catch {
+    return file; // format non décodable par le navigateur : on envoie l'original
+  }
+}
+
+async function shrinkPhotos(e: ChangeEvent<HTMLInputElement>) {
+  const input = e.currentTarget;
+  if (!input.files?.length) return;
+  const out = new DataTransfer();
+  for (const f of Array.from(input.files).slice(0, 10)) out.items.add(await shrink(f));
+  input.files = out.files;
+}
 
 type ProductFormProps = { product?: ProductValues; types: Ref[]; sizes: Ref[]; colorTypes: Ref[] };
 
@@ -48,9 +77,10 @@ export function ProductForm({ product, types, sizes, colorTypes }: ProductFormPr
       </div>
       <label>Couleurs (facultatif, séparées par des virgules)<input name="couleur" defaultValue={product?.couleur} placeholder="rouge, beige" /></label>
       <label>Photos {product ? "(en choisir remplace les actuelles)" : ""}
-        <input name="photos" type="file" accept="image/jpeg,image/png,image/webp" multiple />
+        <input name="photos" type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={shrinkPhotos} />
       </label>
-      {!product && <label>… ou URL d&apos;une image<input name="photoUrl" placeholder="https://…" /></label>}
+      <p className="muted-small">La première photo est celle affichée dans la boutique. Les photos sont réduites automatiquement avant l&apos;envoi.</p>
+      <label>… ou URL d&apos;une image {product ? "(remplace les photos actuelles)" : ""}<input name="photoUrl" placeholder="https://…" /></label>
       {state.error && <p className="form-error" role="alert">{state.error}</p>}
       <div className="form-actions">
         <button className="btn" type="submit" disabled={pending}>{pending ? "Enregistrement…" : "Enregistrer"}</button>
