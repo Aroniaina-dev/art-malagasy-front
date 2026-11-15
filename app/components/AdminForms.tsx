@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, type ChangeEvent } from "react";
+import { useActionState, useRef, useState, type ChangeEvent } from "react";
 import type { Ref } from "@/lib/products";
 import { savePost, saveProduct } from "../actions/admin";
 import type { FormState } from "../actions/contact";
@@ -16,6 +16,8 @@ export type ProductValues = {
   idTaille: string;
   idTypeCouleur: string;
   couleur: string;
+  /** Photos actuelles, en URL affichables. */
+  photos: string[];
 };
 
 /** Réduit une photo à 1600 px de côté au plus et la réencode en JPEG : un envoi doit rester sous 4 Mo au total. */
@@ -39,14 +41,6 @@ async function shrink(file: File): Promise<File> {
   }
 }
 
-async function shrinkPhotos(e: ChangeEvent<HTMLInputElement>) {
-  const input = e.currentTarget;
-  if (!input.files?.length) return;
-  const out = new DataTransfer();
-  for (const f of Array.from(input.files).slice(0, 10)) out.items.add(await shrink(f));
-  input.files = out.files;
-}
-
 type ProductFormProps = { product?: ProductValues; types: Ref[]; sizes: Ref[]; colorTypes: Ref[] };
 
 function Select({ name, label, options, value }: { name: string; label: string; options: Ref[]; value?: string }) {
@@ -59,32 +53,114 @@ function Select({ name, label, options, value }: { name: string; label: string; 
   );
 }
 
+type Preview = { name: string; url: string };
+
+/** Colonne des photos : choix des fichiers, aperçu immédiat, retrait d'une photo avant l'envoi. */
+function PhotoPanel({ current }: { current: string[] }) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [previews, setPreviews] = useState<Preview[]>([]);
+  const [url, setUrl] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  // Remplace les fichiers du champ (le navigateur n'autorise pas à en retirer un seul autrement).
+  const setFiles = (list: File[]) => {
+    const dt = new DataTransfer();
+    list.forEach((f) => dt.items.add(f));
+    if (inputRef.current) inputRef.current.files = dt.files;
+    setPreviews((old) => {
+      old.forEach((p) => URL.revokeObjectURL(p.url));
+      return list.map((f) => ({ name: f.name, url: URL.createObjectURL(f) }));
+    });
+  };
+
+  const onPick = async (e: ChangeEvent<HTMLInputElement>) => {
+    const picked = Array.from(e.currentTarget.files ?? []).slice(0, 10);
+    setBusy(true);
+    const shrunk: File[] = [];
+    for (const f of picked) shrunk.push(await shrink(f));
+    setFiles(shrunk);
+    setBusy(false);
+  };
+
+  const remove = (i: number) => setFiles(Array.from(inputRef.current?.files ?? []).filter((_, k) => k !== i));
+
+  const validUrl = /^https:\/\/\S+$/.test(url.trim());
+  // Ce qui sera enregistré : les nouveaux fichiers, sinon l'URL, sinon les photos actuelles.
+  const shown: { key: string; src: string; removable?: number }[] = previews.length
+    ? previews.map((p, i) => ({ key: p.url, src: p.url, removable: i }))
+    : validUrl
+      ? [{ key: url, src: url.trim() }]
+      : current.map((src) => ({ key: src, src }));
+  const isNew = previews.length > 0 || validUrl;
+
+  return (
+    <aside className="pf-photos">
+      <h2 className="pf-h2">Photos</h2>
+      {shown.length ? (
+        <>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img className="pf-main" src={shown[0].src} alt="Photo principale" />
+          <p className="muted-small">
+            {isNew ? "Aperçu des nouvelles photos" : "Photos actuelles"} · la première est celle affichée dans la boutique.
+          </p>
+          {shown.length > 1 || shown[0].removable !== undefined ? (
+            <ul className="pf-thumbs">
+              {shown.map((p, i) => (
+                <li key={p.key}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={p.src} alt={`Photo ${i + 1}`} />
+                  {p.removable !== undefined && (
+                    <button type="button" aria-label={`Retirer la photo ${i + 1}`} onClick={() => remove(p.removable!)}>×</button>
+                  )}
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </>
+      ) : (
+        <div className="pf-empty">Aucune photo pour l&apos;instant</div>
+      )}
+
+      <label className="pf-pick">
+        <span className="btn btn-light">{busy ? "Préparation…" : current.length || previews.length ? "Choisir d'autres photos" : "Choisir des photos"}</span>
+        <input ref={inputRef} name="photos" type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={onPick} />
+      </label>
+      <p className="muted-small">JPG, PNG ou WebP, 10 au maximum. Elles sont réduites automatiquement avant l&apos;envoi.{current.length > 0 && " De nouvelles photos remplacent les actuelles."}</p>
+
+      {/* un champ désactivé n'est pas envoyé : c'est voulu quand des fichiers sont choisis */}
+      <label>… ou URL d&apos;une image
+        <input name="photoUrl" placeholder="https://…" value={url} onChange={(e) => setUrl(e.target.value)} disabled={previews.length > 0} />
+      </label>
+    </aside>
+  );
+}
+
 export function ProductForm({ product, types, sizes, colorTypes }: ProductFormProps) {
   const [state, action, pending] = useActionState<FormState, FormData>(saveProduct, {});
   return (
-    <form className="contact-form admin-form" action={action}>
+    <form className="contact-form admin-form pf" action={action}>
       {product && <input type="hidden" name="id" value={product.id} />}
-      <label>Titre<input name="titre" defaultValue={product?.titre} required /></label>
-      <label>Description<textarea name="description" rows={4} defaultValue={product?.description} required /></label>
-      <div className="form-row">
-        <Select name="idTypeProduit" label="Type de produit" options={types} value={product?.idTypeProduit} />
-        <Select name="idTaille" label="Taille" options={sizes} value={product?.idTaille} />
-        <Select name="idTypeCouleur" label="Type de couleur" options={colorTypes} value={product?.idTypeCouleur} />
-      </div>
-      <div className="form-row">
-        <label>Prix (€)<input name="prix" type="number" min={0.01} step={0.01} inputMode="decimal" defaultValue={product?.prix ?? ""} required /></label>
-        <label>Stock<input name="nbrStock" type="number" min={0} defaultValue={product?.nbrStock ?? 1} required /></label>
-      </div>
-      <label>Couleurs (facultatif, séparées par des virgules)<input name="couleur" defaultValue={product?.couleur} placeholder="rouge, beige" /></label>
-      <label>Photos {product ? "(en choisir remplace les actuelles)" : ""}
-        <input name="photos" type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={shrinkPhotos} />
-      </label>
-      <p className="muted-small">La première photo est celle affichée dans la boutique. Les photos sont réduites automatiquement avant l&apos;envoi.</p>
-      <label>… ou URL d&apos;une image {product ? "(remplace les photos actuelles)" : ""}<input name="photoUrl" placeholder="https://…" /></label>
-      {state.error && <p className="form-error" role="alert">{state.error}</p>}
-      <div className="form-actions">
-        <button className="btn" type="submit" disabled={pending}>{pending ? "Enregistrement…" : "Enregistrer"}</button>
-        <Link className="text-link" href="/admin/produits">Annuler</Link>
+
+      <PhotoPanel current={product?.photos ?? []} />
+
+      <div className="pf-fields">
+        <label>Titre<input name="titre" defaultValue={product?.titre} required /></label>
+        <label>Description<textarea name="description" rows={5} defaultValue={product?.description} required /></label>
+        <div className="form-row">
+          <Select name="idTypeProduit" label="Type de produit" options={types} value={product?.idTypeProduit} />
+          <Select name="idTaille" label="Taille" options={sizes} value={product?.idTaille} />
+          <Select name="idTypeCouleur" label="Type de couleur" options={colorTypes} value={product?.idTypeCouleur} />
+        </div>
+        <div className="form-row">
+          <label>Prix (€)<input name="prix" type="number" min={0.01} step={0.01} inputMode="decimal" defaultValue={product?.prix ?? ""} required /></label>
+          <label>Stock<input name="nbrStock" type="number" min={0} defaultValue={product?.nbrStock ?? 1} required /></label>
+        </div>
+        <label>Couleurs (facultatif, séparées par des virgules)<input name="couleur" defaultValue={product?.couleur} placeholder="rouge, beige" /></label>
+        {state.error && <p className="form-error" role="alert">{state.error}</p>}
+        <div className="form-actions">
+          <button className="btn" type="submit" disabled={pending}>{pending ? "Enregistrement…" : "Enregistrer"}</button>
+          <Link className="text-link" href="/admin/produits">Annuler</Link>
+        </div>
       </div>
     </form>
   );

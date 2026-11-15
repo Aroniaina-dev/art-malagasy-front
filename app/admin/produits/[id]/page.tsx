@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { api, ApiError } from "@/lib/api";
+import { api, ApiError, fileUrl } from "@/lib/api";
 import { getCategories, getColorTypes, getSizes, type ApiProduit } from "@/lib/catalog";
 import { ProductForm } from "../../../components/AdminForms";
 
@@ -30,6 +30,7 @@ export default async function EditProduct({ params }: { params: Promise<{ id: st
           idTaille: String(a.idTaille),
           idTypeCouleur: String(a.idTypeCouleur),
           couleur: (a.couleur ?? []).join(", "),
+          photos: (a.photos ?? []).map((ph) => fileUrl(ph)),
         }}
       />
     </>

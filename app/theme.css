@@ -349,3 +349,25 @@ footer a:hover { color: var(--gold-light); }
 
 /* Le logo est un PNG à fond transparent : plus besoin de le fondre ni de l'arrondir. */
 .brand img { mix-blend-mode: normal; border-radius: 0; }
+
+/* ---------- Admin : formulaire produit en deux colonnes (photos à gauche, champs à droite) ---------- */
+.admin-form.pf { max-width: 1100px; display: grid; grid-template-columns: minmax(0, 380px) minmax(0, 1fr); gap: 30px; align-items: start; }
+.pf-photos, .pf-fields { display: grid; gap: 14px; min-width: 0; }
+.pf-photos { position: sticky; top: 20px; }
+.pf-h2 { font: 600 18px var(--font-playfair), serif; color: #28130f; margin: 0; }
+.pf-main { width: 100%; aspect-ratio: 1 / 1; object-fit: contain; background: var(--sand); border-radius: 14px; display: block; }
+.pf-empty { aspect-ratio: 1 / 1; display: grid; place-items: center; background: var(--sand); border: 2px dashed #d9c2a3; border-radius: 14px; color: var(--muted); font-size: 13px; }
+.pf-thumbs { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(66px, 1fr)); gap: 8px; }
+.pf-thumbs li { position: relative; aspect-ratio: 1 / 1; border-radius: 10px; overflow: hidden; background: var(--sand); border: 1px solid var(--line); }
+.pf-thumbs li:first-child { border: 2px solid var(--gold); }
+.pf-thumbs img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pf-thumbs button { position: absolute; top: 3px; right: 3px; width: 22px; height: 22px; border-radius: 50%; border: 0; background: rgba(23, 13, 11, 0.8); color: #fff; font-size: 15px; line-height: 1; cursor: pointer; display: grid; place-items: center; }
+.pf-pick { cursor: pointer; }
+.pf-pick .btn { width: 100%; padding: 12px 18px; font-size: 13px; }
+.contact-form .pf-pick input[type="file"] { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.pf-pick:focus-within .btn { outline: 2px solid var(--gold); outline-offset: 2px; }
+@media (max-width: 900px) {
+  .admin-form.pf { grid-template-columns: 1fr; gap: 22px; }
+  .pf-photos { position: static; }
+  .pf-main, .pf-empty { max-width: 320px; }
+}
