@@ -24,7 +24,10 @@ export type Product = {
   name: string;
   description: string;
   image: string;
+  /** Toutes les photos, la principale en premier (au moins une). */
+  images: string[];
   category: string; // id du type de produit
+  categoryLabel?: string;
   size: string; // id de taille
   colorType: string; // id du type de couleur
   colors: string[];

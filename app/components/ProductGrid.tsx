@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { fill, label } from "@/lib/dictionaries";
 import { isOptimizable, type Product } from "@/lib/products";
@@ -11,7 +12,7 @@ import { useShop } from "./ShopProvider";
 function ProductCard({ p }: { p: Product }) {
   const [liked, setLiked] = useState(false);
   const { addToCart } = useShop();
-  const { d, money, euros, currency } = useI18n();
+  const { d, to, money, euros, currency } = useI18n();
   const orderable = p.inStock && p.price !== null;
   const meta = [
     p.sizeLabel && label(d, p.sizeLabel),
@@ -21,13 +22,15 @@ function ProductCard({ p }: { p: Product }) {
   return (
     <article className="product">
       <div className="product-image">
-        <Image src={p.image} alt={p.name} fill sizes="(max-width: 760px) 50vw, 20vw" unoptimized={!isOptimizable(p.image)} />
+        <Link className="product-photo-link" href={to(`/produit/${p.id}`)} aria-label={fill(d.product.view, { name: p.name })}>
+          <Image src={p.image} alt={p.name} fill sizes="(max-width: 760px) 50vw, 20vw" unoptimized={!isOptimizable(p.image)} />
+        </Link>
         <button className={`heart${liked ? " on" : ""}`} aria-label={d.product.favorite} aria-pressed={liked} onClick={() => setLiked((l) => !l)}>
           <Icon name="heart" />
         </button>
       </div>
       <div className="product-info">
-        <h3>{p.name}</h3>
+        <h3><Link href={to(`/produit/${p.id}`)}>{p.name}</Link></h3>
         {meta.length > 0 && <p className="product-meta">{meta.join(" · ")}</p>}
         <div className="price-row">
           <span className="price" title={p.price !== null && currency !== "EUR" ? euros(p.price) : undefined}>

@@ -10,7 +10,7 @@ type Shop = {
   items: CartItem[];
   cart: number;
   total: number;
-  addToCart: (p: Product) => void;
+  addToCart: (p: Product, qty?: number) => void;
   setQty: (id: string, qty: number) => void;
   clearCart: () => void;
   query: string;
@@ -70,13 +70,13 @@ export default function ShopProvider({ children }: { children: ReactNode }) {
   const [toast, setToast] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  const addToCart = useCallback((p: Product) => {
+  const addToCart = useCallback((p: Product, qty = 1) => {
     const cur = parse(getSnapshot());
     const found = cur.find((i) => i.id === p.id);
     write(
       found
-        ? cur.map((i) => (i.id === p.id ? { ...i, qty: i.qty + 1 } : i))
-        : [...cur, { id: p.id, name: p.name, image: p.image, price: p.price ?? 0, qty: 1 }],
+        ? cur.map((i) => (i.id === p.id ? { ...i, qty: i.qty + qty } : i))
+        : [...cur, { id: p.id, name: p.name, image: p.image, price: p.price ?? 0, qty }],
     );
     setToast(true);
     clearTimeout(timer.current);

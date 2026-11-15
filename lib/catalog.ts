@@ -50,6 +50,7 @@ export const toProduct = (a: ApiProduit): Product => {
     name: a.titre,
     description: a.description,
     image: fileUrl(a.photos?.[0]),
+    images: a.photos?.length ? a.photos.map((ph) => fileUrl(ph)) : [fileUrl(undefined)],
     category: String(a.idTypeProduit),
     size: String(a.idTaille),
     colorType: String(a.idTypeCouleur),
@@ -68,28 +69,50 @@ export async function getAllProducts(): Promise<ApiProduit[]> {
   return res.data;
 }
 
-/** Produits visibles en boutique (les produits archivés sont masqués). */
-export async function getProducts(limit?: number): Promise<Product[]> {
+/** Tables de référence, pour compléter un produit (libellés, image de repli). */
+async function loadRefs() {
   const none: Ref[] = [];
-  const [all, categories, sizes, colorTypes] = await Promise.all([
-    getAllProducts(),
+  const [categories, sizes, colorTypes] = await Promise.all([
     getCategories().catch(() => []),
     getSizes().catch(() => none),
     getColorTypes().catch(() => none),
   ]);
-  const slugOf = new Map(categories.map((c) => [c.id, c.slug]));
-  const sizeOf = new Map(sizes.map((r) => [r.id, r.label]));
-  const colorTypeOf = new Map(colorTypes.map((r) => [r.id, r.label]));
-  const list = all
-    .filter((a) => a.archive !== 1)
-    .map((a) => {
-      const base = toProduct(a);
-      const p = { ...base, sizeLabel: sizeOf.get(base.size), colorTypeLabel: colorTypeOf.get(base.colorType) };
-      const slug = slugOf.get(p.category);
-      // sans photo : illustration du type de produit plutôt qu'une image générique
-      return a.photos?.length || !slug ? p : { ...p, image: `/categories/${slug}.png` };
-    });
+  return {
+    category: new Map(categories.map((c) => [c.id, c])),
+    size: new Map(sizes.map((r) => [r.id, r.label])),
+    colorType: new Map(colorTypes.map((r) => [r.id, r.label])),
+  };
+}
+
+function enrich(a: ApiProduit, refs: Awaited<ReturnType<typeof loadRefs>>): Product {
+  const base = toProduct(a);
+  const cat = refs.category.get(base.category);
+  const p = { ...base, categoryLabel: cat?.label, sizeLabel: refs.size.get(base.size), colorTypeLabel: refs.colorType.get(base.colorType) };
+  // sans photo : illustration du type de produit plutôt qu'une image générique
+  if (a.photos?.length || !cat?.slug) return p;
+  const img = `/categories/${cat.slug}.png`;
+  return { ...p, image: img, images: [img] };
+}
+
+/** Produits visibles en boutique (les produits archivés sont masqués). */
+export async function getProducts(limit?: number): Promise<Product[]> {
+  const [all, refs] = await Promise.all([getAllProducts(), loadRefs()]);
+  const list = all.filter((a) => a.archive !== 1).map((a) => enrich(a, refs));
   return limit ? list.slice(0, limit) : list;
+}
+
+/** Un produit pour sa fiche ; null s'il n'existe pas ou s'il est archivé. */
+export async function getProduct(id: string): Promise<Product | null> {
+  if (!/^[a-f0-9]{24}$/i.test(id)) return null;
+  let a: ApiProduit;
+  try {
+    a = (await api<{ data: ApiProduit }>(`/produit/${id}`)).data;
+  } catch (e) {
+    if (e instanceof Error && "status" in e && [400, 404].includes((e as { status: number }).status)) return null;
+    throw e;
+  }
+  if (!a || a.archive === 1) return null;
+  return enrich(a, await loadRefs());
 }
 
 const toPost = (b: ApiBlog): Post => ({
