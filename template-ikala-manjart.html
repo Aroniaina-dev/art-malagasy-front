@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="IKALA MANJ’ART — Découvrez l’artisanat malgache et les créations faites main par nos artisans.">
+  <title>IKALA MANJ’ART — L’artisanat malgache</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --ink:#170d0b; --ink-2:#24110e; --wine:#4a101d; --gold:#d99a36;
+      --gold-light:#f3c36b; --cream:#fbf5eb; --muted:#8b786b; --line:rgba(170,112,48,.22);
+      --serif:"Playfair Display",Georgia,serif; --sans:"DM Sans",Arial,sans-serif;
+      --shadow:0 18px 45px rgba(41,18,10,.10);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--cream);color:var(--ink);font-family:var(--sans)}
+    a{color:inherit;text-decoration:none}
+    button{font:inherit;cursor:pointer}
+    .topline{height:34px;background:#190b0d;color:#f8e8cc;display:flex;align-items:center;justify-content:space-between;padding:0 5.2%;font-size:11px;letter-spacing:.02em}
+    .topline span{display:flex;align-items:center;gap:8px}
+    .topline strong{color:var(--gold-light);font-weight:600}
+    .site-header{position:absolute;z-index:5;top:34px;left:0;width:100%;height:94px;display:flex;align-items:center;justify-content:space-between;padding:0 5.2%;color:#fff;border-bottom:1px solid rgba(255,220,165,.16)}
+    .brand{display:flex;align-items:center;gap:14px;min-width:260px}
+    .brand img{width:72px;height:72px;object-fit:contain;border-radius:50%;mix-blend-mode:screen}
+    .brand-copy{display:flex;flex-direction:column;line-height:1}
+    .brand-copy b{font:600 28px var(--serif);letter-spacing:.14em;color:var(--gold-light)}
+    .brand-copy small{font:11px var(--serif);letter-spacing:.25em;color:#d4a45d;margin-top:7px}
+    nav{display:flex;align-items:center;gap:31px;font-size:13px}
+    nav a{opacity:.88;transition:.2s}
+    nav a:hover,nav a.active{color:var(--gold-light);opacity:1}
+    nav a.active{border:1px solid var(--gold);border-radius:30px;padding:11px 20px}
+    .header-actions{display:flex;align-items:center;gap:18px}
+    .search{height:42px;width:210px;border:1px solid rgba(246,207,143,.45);border-radius:30px;display:flex;align-items:center;padding:0 14px;gap:9px;background:rgba(20,9,8,.32)}
+    .search input{width:100%;border:0;outline:0;background:transparent;color:#fff;font-size:11px}
+    .search input::placeholder{color:#d5c1a8}
+    .icon-btn{border:0;background:none;color:#f8e8cc;font-size:22px;position:relative}
+    .cart-count{position:absolute;right:-8px;top:-7px;background:var(--gold);color:#1c0d08;width:16px;height:16px;border-radius:50%;font-size:10px;display:grid;place-items:center}
+    .menu-toggle{display:none;background:none;border:0;color:white;font-size:26px}
+    .hero{min-height:760px;position:relative;display:flex;align-items:center;overflow:hidden;color:white;background:#180c0c url("assets/hero-artisan.jpg") center 48%/cover no-repeat}
+    .hero:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(18,8,9,.97) 0%,rgba(27,10,10,.86) 30%,rgba(30,11,9,.25) 62%,rgba(16,8,6,.08) 100%)}
+    .hero:after{content:"";position:absolute;inset:auto 0 0;height:130px;background:linear-gradient(transparent,rgba(17,8,7,.45))}
+    .hero-content{position:relative;z-index:1;width:min(590px,48%);margin-left:5.2%;padding-top:85px}
+    .eyebrow{display:flex;align-items:center;gap:12px;color:var(--gold-light);text-transform:uppercase;letter-spacing:.24em;font-size:10px;font-weight:700}
+    .eyebrow:before{content:"";height:1px;width:38px;background:var(--gold)}
+    h1{font:500 clamp(42px,5vw,76px)/1.05 var(--serif);margin:22px 0 20px;letter-spacing:-.035em}
+    h1 em{font-style:normal;color:var(--gold-light);display:block}
+    .hero-content p{max-width:480px;color:#f0e4d6;font:16px/1.75 var(--serif);margin:0 0 30px}
+    .btn{display:inline-flex;align-items:center;gap:18px;border:0;border-radius:40px;padding:16px 27px;background:linear-gradient(135deg,#f4bd5c,#c77c20);color:#1d0d08;font-weight:700;box-shadow:0 10px 24px rgba(194,117,27,.2);transition:transform .2s,box-shadow .2s}
+    .btn:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(194,117,27,.3)}
+    .btn span{font-size:20px}
+    .hero-note{margin-top:30px;color:#d9c3a7;font-size:11px;letter-spacing:.08em}
+    .trust{position:relative;z-index:2;background:linear-gradient(100deg,#1a0b0b,#30130e,#1b0b0a);color:#f8e8cc;display:grid;grid-template-columns:repeat(4,1fr);padding:24px 5.2%;border-top:1px solid rgba(231,174,87,.32);border-bottom:1px solid rgba(231,174,87,.2)}
+    .trust-item{display:flex;align-items:center;gap:15px;padding:0 22px;border-right:1px solid rgba(231,174,87,.35)}
+    .trust-item:first-child{padding-left:0}.trust-item:last-child{border:0}
+    .trust-icon{font-size:30px;color:var(--gold-light);width:38px;text-align:center}
+    .trust-item b{display:block;font:600 14px var(--serif);color:var(--gold-light);margin-bottom:4px}
+    .trust-item small{font-size:11px;color:#e5d5c3}
+    .section{padding:82px 5.2%}
+    .section-head{text-align:center;max-width:650px;margin:0 auto 38px}
+    .section-kicker{color:#a66d2b;text-transform:uppercase;letter-spacing:.24em;font-size:10px;font-weight:700}
+    h2{font:500 clamp(30px,3.5vw,46px) var(--serif);margin:12px 0;color:#28130f}
+    .section-head p{color:#806e60;line-height:1.7;font-size:14px}
+    .categories{background:#fbf5eb}
+    .category-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:14px}
+    .category-card{background:#fff;border:1px solid #eee2d3;border-radius:14px;padding:12px 10px 17px;text-align:center;box-shadow:0 8px 22px rgba(50,24,10,.045);transition:.25s}
+    .category-card:hover{transform:translateY(-7px);box-shadow:var(--shadow);border-color:#d6a85f}
+    .category-card img{width:100%;height:130px;object-fit:contain;mix-blend-mode:multiply}
+    .category-card h3{font:600 13px var(--serif);margin:10px 0 0;color:#4b1820}
+    .products{background:#f4e9da}
+    .product-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+    .product-card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 8px 25px rgba(55,24,12,.07);transition:.25s}
+    .product-card:hover{transform:translateY(-5px);box-shadow:var(--shadow)}
+    .product-image{height:230px;background:#ead9c7;display:grid;place-items:center;overflow:hidden}
+    .product-image img{width:100%;height:100%;object-fit:cover}
+    .product-info{padding:16px}
+    .product-info small{color:#9a7652;font-size:10px;text-transform:uppercase;letter-spacing:.12em}
+    .product-info h3{font:600 17px var(--serif);margin:8px 0;color:#2a1510}
+    .product-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:13px}
+    .price{font-weight:700;color:#8b1831}
+    .add{width:36px;height:36px;border:0;border-radius:50%;background:#4b111e;color:#f7d89b;font-size:20px}
+    .story{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:55px;background:#fff}
+    .story-visual{height:430px;border-radius:18px;overflow:hidden;position:relative;background:url("assets/hero-artisan.jpg") center/cover}
+    .story-visual:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(20,8,7,.32),transparent 55%)}
+    .story-copy .section-kicker{display:block}
+    .story-copy h2{text-align:left;max-width:500px}
+    .story-copy p{color:#77685d;line-height:1.85;font-size:14px;max-width:510px}
+    .story-copy .btn{margin-top:14px}
+    .newsletter{background:linear-gradient(110deg,#230d12,#4a1420);color:#fff;text-align:center;padding:68px 20px}
+    .newsletter h2{color:#f5d49a;margin-top:10px}
+    .newsletter p{color:#dfc9b8;font-size:13px}
+    .newsletter-form{display:flex;max-width:440px;margin:25px auto 0;background:#fff;border-radius:40px;padding:5px}
+    .newsletter-form input{flex:1;min-width:0;border:0;outline:0;padding:0 16px;border-radius:30px;font-size:12px}
+    .newsletter-form button{border:0;border-radius:30px;padding:13px 20px;background:#d99a36;color:#1b0d08;font-weight:700}
+    footer{background:#120909;color:#e8d7c4;padding:52px 5.2% 22px}
+    .footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:35px}
+    footer h3{font:500 20px var(--serif);color:#e7b75e;margin:0 0 17px}
+    footer p,footer a{font-size:12px;line-height:2;color:#c6b4a4}
+    footer a{display:block}
+    .footer-brand{font:600 24px var(--serif);letter-spacing:.13em;color:#e7b75e}
+    .copyright{border-top:1px solid rgba(223,173,99,.2);margin-top:35px;padding-top:18px;text-align:center;color:#927f70;font-size:10px}
+    .toast{position:fixed;bottom:22px;right:22px;background:#25100e;color:#fff;padding:13px 18px;border-radius:10px;box-shadow:var(--shadow);opacity:0;transform:translateY(15px);transition:.25s;z-index:20;font-size:13px}
+    .toast.show{opacity:1;transform:translateY(0)}
+    @media(max-width:1100px){
+      nav{gap:17px}.brand{min-width:210px}.brand-copy b{font-size:22px}.search{width:170px}
+      .category-grid{grid-template-columns:repeat(4,1fr)}.product-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:760px){
+      .topline{justify-content:center}.topline span:nth-child(2),.topline span:nth-child(3){display:none}
+      .site-header{height:78px;padding:0 5%}.brand{min-width:0}.brand img{width:52px;height:52px}.brand-copy b{font-size:18px}.brand-copy small{font-size:8px}
+      nav,.search,.header-actions .icon-btn{display:none}.menu-toggle{display:block}
+      nav.open{display:flex;position:absolute;top:78px;left:0;right:0;background:#1c0c0d;padding:22px 6%;flex-direction:column;align-items:flex-start;gap:18px}
+      .hero{min-height:690px;background-position:60% center}.hero:before{background:linear-gradient(90deg,rgba(18,8,9,.94),rgba(22,8,8,.65) 65%,rgba(20,8,7,.3))}
+      .hero-content{width:88%;margin-left:6%;padding-top:75px}h1{font-size:48px}.hero-content p{font-size:14px}
+      .trust{grid-template-columns:repeat(2,1fr);gap:20px;padding:25px 6%}.trust-item{padding:0;border:0}.trust-icon{font-size:24px;width:30px}
+      .section{padding:60px 5%}.category-grid{grid-template-columns:repeat(2,1fr);gap:12px}.category-card img{height:145px}
+      .product-grid{grid-template-columns:repeat(2,1fr);gap:12px}.product-image{height:165px}.product-info{padding:12px}.product-info h3{font-size:14px}
+      .story{grid-template-columns:1fr;gap:28px}.story-visual{height:280px}.footer-grid{grid-template-columns:repeat(2,1fr);gap:25px}
+    }
+    @media(max-width:420px){.brand-copy b{font-size:16px}.brand img{width:46px;height:46px}h1{font-size:41px}.product-grid{grid-template-columns:1fr 1fr}.trust-item{gap:8px}.trust-item b{font-size:12px}.trust-item small{font-size:10px}}
+  </style>
+</head>
+<body>
+  <div class="topline">
+    <span>✦ <strong>Artisanat 100% malgache</strong></span>
+    <span>⌖ Livraison partout à Madagascar</span>
+    <span>☎ +261 34 12 34 567</span>
+  </div>
+
+  <header class="site-header">
+    <a class="brand" href="#">
+      <img src="assets/logo-ikala.jpg" alt="Logo IKALA MANJ’ART">
+      <span class="brand-copy"><b>IKALA</b><small>MANJ’ART</small></span>
+    </a>
+    <nav id="mainNav">
+      <a class="active" href="#">Accueil</a>
+      <a href="#categories">Boutique⌄</a>
+      <a href="#histoire">À propos</a>
+      <a href="#produits">Blog</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="header-actions">
+      <label class="search">⌕ <input type="search" placeholder="Rechercher un article..."></label>
+      <button class="icon-btn" aria-label="Mon compte">♙</button>
+      <button class="icon-btn" aria-label="Panier">🛒<span class="cart-count" id="cartCount">0</span></button>
+    </div>
+    <button class="menu-toggle" id="menuToggle" aria-label="Ouvrir le menu">☰</button>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-content">
+        <div class="eyebrow">L’élégance de l’artisanat malgache</div>
+        <h1>Découvrez l’authenticité <em>de Madagascar</em></h1>
+        <p>Des créations uniques, façonnées à la main par nos artisans locaux : vannerie, sculptures, bijoux, textiles et objets de décoration.</p>
+        <a class="btn" href="#categories">Découvrir la boutique <span>→</span></a>
+        <div class="hero-note">FAIT MAIN · CULTURE · SAVOIR-FAIRE</div>
+      </div>
+    </section>
+
+    <section class="trust" aria-label="Nos engagements">
+      <div class="trust-item"><div class="trust-icon">♢</div><div><b>Paiement sécurisé</b><small>Achetez en toute confiance</small></div></div>
+      <div class="trust-item"><div class="trust-icon">♧</div><div><b>Livraison rapide</b><small>Partout à Madagascar</small></div></div>
+      <div class="trust-item"><div class="trust-icon">☏</div><div><b>Service client réactif</b><small>Nous sommes là pour vous</small></div></div>
+      <div class="trust-item"><div class="trust-icon">♡</div><div><b>Soutien aux artisans</b><small>Ensemble, valorisons notre culture</small></div></div>
+    </section>
+
+    <section class="section categories" id="categories">
+      <div class="section-head">
+        <span class="section-kicker">Explorez nos univers</span>
+        <h2>Un savoir-faire, mille histoires</h2>
+        <p>Découvrez des pièces authentiques inspirées des traditions et du talent des artisans de Madagascar.</p>
+      </div>
+      <div class="category-grid">
+        <a class="category-card" href="#produits"><img src="assets/sacs.jpg" alt="Sac en vannerie"><h3>Sacs &amp; Vannerie</h3></a>
+        <a class="category-card" href="#produits"><img src="assets/masques.jpg" alt="Masque sculpté"><h3>Masques &amp; Sculptures</h3></a>
+        <a class="category-card" href="#produits"><img src="assets/bijoux.jpg" alt="Bijoux artisanaux"><h3>Bijoux</h3></a>
+        <a class="category-card" href="#produits"><img src="assets/decoration.jpg" alt="Bol décoratif"><h3>Décoration</h3></a>
+        <a class="category-card" href="#produits"><img src="assets/textiles.jpg" alt="Textile malgache"><h3>Textiles malgaches</h3></a>
+        <a class="category-card" href="#produits"><img src="assets/souvenirs.jpg" alt="Souvenir baobab"><h3>Souvenirs</h3></a>
+        <a class="category-card" href="#produits"><img src="assets/cadeaux.jpg" alt="Cadeau artisanal"><h3>Cadeaux</h3></a>
+      </div>
+    </section>
+
+    <section class="section products" id="produits">
+      <div class="section-head">
+        <span class="section-kicker">Sélection artisanale</span>
+        <h2>Nos coups de cœur</h2>
+        <p>Des créations choisies pour leur beauté, leur authenticité et le soin apporté à chaque détail.</p>
+      </div>
+      <div class="product-grid">
+        <article class="product-card"><div class="product-image"><img src="assets/sacs.jpg" alt="Sac en raphia tressé"></div><div class="product-info"><small>Vannerie · Fait main</small><h3>Sac en raphia tressé</h3><div class="product-bottom"><span class="price">45 000 Ar</span><button class="add" aria-label="Ajouter au panier">+</button></div></div></article>
+        <article class="product-card"><div class="product-image"><img src="assets/masques.jpg" alt="Sculpture artisanale"></div><div class="product-info"><small>Sculpture · Bois</small><h3>Masque sculpté</h3><div class="product-bottom"><span class="price">75 000 Ar</span><button class="add" aria-label="Ajouter au panier">+</button></div></div></article>
+        <article class="product-card"><div class="product-image"><img src="assets/bijoux.jpg" alt="Collier en perles"></div><div class="product-info"><small>Bijoux · Collection</small><h3>Collier en perles naturelles</h3><div class="product-bottom"><span class="price">27 000 Ar</span><button class="add" aria-label="Ajouter au panier">+</button></div></div></article>
+        <article class="product-card"><div class="product-image"><img src="assets/textiles.jpg" alt="Textile malgache"></div><div class="product-info"><small>Textile · Tradition</small><h3>Tissu traditionnel</h3><div class="product-bottom"><span class="price">32 000 Ar</span><button class="add" aria-label="Ajouter au panier">+</button></div></div></article>
+      </div>
+    </section>
+
+    <section class="section story" id="histoire">
+      <div class="story-visual" role="img" aria-label="Paysage de Madagascar et artisanat local"></div>
+      <div class="story-copy">
+        <span class="section-kicker">L’âme de Madagascar</span>
+        <h2>Chaque création raconte une histoire.</h2>
+        <p>IKALA MANJ’ART met à l’honneur les matières, les gestes et les traditions qui font la richesse de l’artisanat malgache. Chaque pièce est une invitation à découvrir un savoir-faire et à soutenir celles et ceux qui le perpétuent.</p>
+        <p>Choisir une création artisanale, c’est faire entrer chez soi un peu de Madagascar.</p>
+        <a class="btn" href="#categories">Explorer la boutique <span>→</span></a>
+      </div>
+    </section>
+
+    <section class="newsletter" id="contact">
+      <span class="section-kicker">Restons en contact</span>
+      <h2>Recevez nos nouveautés artisanales</h2>
+      <p>Inscrivez-vous pour découvrir les nouvelles collections et les créations de nos artisans.</p>
+      <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Merci pour votre inscription !');">
+        <input type="email" placeholder="Votre adresse e-mail" required>
+        <button type="submit">S’inscrire</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-grid">
+      <div><div class="footer-brand">IKALA MANJ’ART</div><p>L’artisanat malgache dans toute son authenticité. Des créations faites main, porteuses de culture et de savoir-faire.</p></div>
+      <div><h3>Boutique</h3><a href="#categories">Sacs &amp; Vannerie</a><a href="#categories">Bijoux</a><a href="#categories">Décoration</a><a href="#categories">Textiles</a></div>
+      <div><h3>Informations</h3><a href="#histoire">Notre histoire</a><a href="#contact">Contact</a><a href="#">Livraison &amp; retours</a><a href="#">Conditions générales</a></div>
+      <div><h3>Nous contacter</h3><p>Madagascar<br>+261 34 12 34 567<br>contact@ikalamanjart.mg</p></div>
+    </div>
+    <div class="copyright">© 2026 IKALA MANJ’ART — Tous droits réservés.</div>
+  </footer>
+  <div class="toast" id="toast">Article ajouté au panier</div>
+
+  <script>
+    const toggle = document.getElementById('menuToggle');
+    const nav = document.getElementById('mainNav');
+    toggle.addEventListener('click', () => nav.classList.toggle('open'));
+
+    let cart = 0;
+    const count = document.getElementById('cartCount');
+    const toast = document.getElementById('toast');
+    document.querySelectorAll('.add').forEach(button => {
+      button.addEventListener('click', () => {
+        cart++;
+        count.textContent = cart;
+        toast.classList.add('show');
+        window.setTimeout(() => toast.classList.remove('show'), 1800);
+      });
+    });
+  </script>
+</body>
+</html>

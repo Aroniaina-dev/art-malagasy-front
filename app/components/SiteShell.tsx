@@ -1,13 +1,14 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { dictionaries, href, type Lang } from "@/lib/dictionaries";
+import { BRAND, EMAIL, PHONE, WHATSAPP } from "@/lib/site";
 import Header from "./Header";
 import I18nProvider from "./I18nProvider";
 import { Icon } from "./Icons";
 import ShopProvider from "./ShopProvider";
 
-// Numéro WhatsApp de la boutique, au format international sans « + » ni espaces.
-const WHATSAPP = "261341234567";
+// Année calculée au chargement du module (pas pendant le rendu, incompatible avec le pré-rendu).
+const YEAR = new Date().getFullYear();
 
 export default function SiteShell({ lang, children }: { lang: Lang; children: ReactNode }) {
   const d = dictionaries[lang];
@@ -16,12 +17,9 @@ export default function SiteShell({ lang, children }: { lang: Lang; children: Re
       <ShopProvider>
         <div className="topbar">
           <div className="topbar-inner">
+            <span><Icon name="star" /> <strong>{d.topbar.handmade}</strong></span>
             <span><Icon name="truck" /> {d.topbar.shipping}</span>
-            <span><Icon name="star" /> {d.topbar.handmade}</span>
-            <span><Icon name="phone" /> +261 34 12 345 67</span>
-            <span className="socials">
-              <Icon name="facebook" /><Icon name="instagram" /><Icon name="tiktok" /><Icon name="youtube" />
-            </span>
+            <span><Icon name="phone" /> {PHONE}</span>
           </div>
         </div>
 
@@ -31,11 +29,12 @@ export default function SiteShell({ lang, children }: { lang: Lang; children: Re
 
         <footer id="contact">
           <div className="footer-inner">
-            <div><h4>ArtMadagascar</h4><p>{d.footer.tagline}<br />{d.footer.tagline2}</p></div>
-            <div><h4>{d.footer.shop}</h4><p><Link href={href(lang, "/boutique")}>{d.footer.allProducts}</Link><br /><Link href={href(lang, "/panier")}>{d.nav.cart}</Link></p></div>
-            <div><h4>{d.footer.info}</h4><p><Link href={href(lang, "/a-propos")}>{d.nav.about}</Link><br /><Link href={href(lang, "/blog")}>{d.nav.blog}</Link><br /><Link href={href(lang, "/suivi")}>{d.footer.track}</Link><br /><Link href={href(lang, "/contact")}>{d.nav.contact}</Link></p></div>
-            <div><h4>{d.footer.contact}</h4><p>Antananarivo, Madagascar<br />+261 34 12 345 67<br />contact@artmadagascar.mg</p></div>
+            <div><div className="footer-brand">{BRAND}</div><p>{d.footer.tagline}<br />{d.footer.tagline2}</p></div>
+            <div><h4>{d.footer.shop}</h4><p><Link href={href(lang, "/boutique")}>{d.footer.allProducts}</Link><br /><Link href={href(lang, "/panier")}>{d.nav.cart}</Link><br /><Link href={href(lang, "/suivi")}>{d.footer.track}</Link></p></div>
+            <div><h4>{d.footer.info}</h4><p><Link href={href(lang, "/a-propos")}>{d.nav.about}</Link><br /><Link href={href(lang, "/blog")}>{d.nav.blog}</Link><br /><Link href={href(lang, "/contact")}>{d.nav.contact}</Link></p></div>
+            <div><h4>{d.footer.contact}</h4><p>Madagascar<br />{PHONE}<br />{EMAIL}</p></div>
           </div>
+          <div className="copyright">© {YEAR} {BRAND}. {d.footer.rights}</div>
         </footer>
 
         <a

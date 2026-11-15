@@ -1,0 +1,206 @@
+/* Thème IKALA MANJ'ART : sombre et doré. Chargé après globals.css et shop.css, il en redéfinit les couleurs
+   et ajoute les sections de la nouvelle page d'accueil. */
+
+:root {
+  --ink: #170d0b;
+  --ink-2: #24110e;
+  --wine: #4a101d;
+  --wine-dark: #2c0a12;
+  --wine-deep: #120909;
+  --gold: #d99a36;
+  --gold-light: #f3c36b;
+  --bronze: #a66d2b;
+  --cream: #fbf5eb;
+  --sand: #f4e9da;
+  --muted: #8b786b;
+  --line: rgba(170, 112, 48, 0.22);
+  --shadow: 0 18px 45px rgba(41, 18, 10, 0.1);
+  --dark-band: linear-gradient(100deg, #1a0b0b, #30130e, #1b0b0a);
+}
+
+body { background: var(--cream); color: var(--ink); }
+h1, h2 { font-weight: 500; }
+
+/* ---------- Barre du haut et header ---------- */
+.topbar { background: #190b0d; color: #f8e8cc; font-size: 11px; letter-spacing: 0.02em; }
+.topbar strong { color: var(--gold-light); font-weight: 600; }
+.topbar svg.ic { color: var(--gold-light); }
+
+.main-header { background: var(--dark-band); color: #fff; border-bottom: 1px solid rgba(255, 220, 165, 0.16); box-shadow: none; }
+.brand { gap: 12px; min-width: 220px; }
+.brand img { width: 60px; height: 60px; border-radius: 50%; object-fit: contain; mix-blend-mode: screen; }
+.brand-copy { display: flex; flex-direction: column; line-height: 1; }
+.brand-copy b { font: 600 24px var(--font-playfair), serif; letter-spacing: 0.14em; color: var(--gold-light); }
+.brand-copy small { font: 10px var(--font-playfair), serif; letter-spacing: 0.25em; color: #d4a45d; margin-top: 6px; }
+
+.main-header nav { font-size: 13px; font-weight: 500; }
+.main-header nav a { color: #f3e6d4; opacity: 0.9; }
+.main-header nav a:hover, .main-header nav a.active { color: var(--gold-light); opacity: 1; }
+.main-header nav a.active { background: transparent; color: var(--gold-light); border: 1px solid var(--gold); border-radius: 30px; padding: 10px 20px; }
+
+.search { border-color: rgba(246, 207, 143, 0.45); background: rgba(20, 9, 8, 0.32); color: #f8e8cc; }
+.search input { color: #fff; }
+.search input::placeholder { color: #d5c1a8; }
+.icon-btn { color: #f8e8cc; }
+.cart-count { background: var(--gold); color: #1c0d08; font-weight: 700; }
+.menu-toggle { color: #fff; }
+.switch { border-color: rgba(246, 207, 143, 0.45); }
+.switch a { color: #d5c1a8; }
+.switch a.on { background: var(--gold); color: #1c0d08; }
+.currency { border-color: rgba(246, 207, 143, 0.45); background: rgba(20, 9, 8, 0.32); color: #f8e8cc; }
+.currency option { color: #170d0b; background: #fff; }
+
+/* ---------- Boutons ---------- */
+.btn { background: linear-gradient(135deg, #f4bd5c, #c77c20); color: #1d0d08; border-radius: 40px; box-shadow: 0 10px 24px rgba(194, 117, 27, 0.2); }
+.btn:hover { background: linear-gradient(135deg, #f7c96f, #d08628); transform: translateY(-3px); box-shadow: 0 14px 30px rgba(194, 117, 27, 0.3); }
+.btn:disabled { opacity: 0.6; cursor: wait; transform: none; }
+.btn-light { background: transparent; color: var(--wine); border: 1px solid var(--bronze); box-shadow: none; }
+.btn-light:hover { background: var(--sand); }
+.text-link, .linklike { color: #8b1831; }
+
+/* ---------- Hero (l'image de fond reste celle d'origine) ---------- */
+.hero { min-height: 640px; color: #fff; background: #180c0c; }
+.hero-bg { object-position: 72% center; }
+.hero::after { background: linear-gradient(90deg, rgba(18, 8, 9, 0.97) 0%, rgba(27, 10, 10, 0.86) 30%, rgba(30, 11, 9, 0.25) 62%, rgba(16, 8, 6, 0.08) 100%); }
+.hero-inner { padding: 70px 5.2%; max-width: none; }
+.hero h1 { color: #fff; max-width: 600px; letter-spacing: -0.035em; line-height: 1.05; margin: 22px 0 20px; }
+.hero h1 span { color: var(--gold-light); display: block; }
+.hero p { color: #f0e4d6; font: 16px/1.75 var(--font-playfair), serif; max-width: 480px; margin: 0 0 30px; }
+.hero-note { margin-top: 30px; color: #d9c3a7; font-size: 11px; letter-spacing: 0.08em; }
+
+.eyebrow, .section-kicker { display: flex; align-items: center; gap: 12px; color: var(--bronze); text-transform: uppercase; letter-spacing: 0.24em; font-size: 10px; font-weight: 700; }
+.hero .eyebrow, .page-hero .eyebrow { color: var(--gold-light); }
+.hero .eyebrow::before { content: ""; height: 1px; width: 38px; background: var(--gold); }
+
+/* ---------- Bandeau de confiance ---------- */
+.trust { position: relative; z-index: 2; background: var(--dark-band); color: #f8e8cc; display: grid; grid-template-columns: repeat(4, 1fr); padding: 24px 5.2%; border-top: 1px solid rgba(231, 174, 87, 0.32); border-bottom: 1px solid rgba(231, 174, 87, 0.2); }
+.trust-item { display: flex; align-items: center; gap: 15px; padding: 0 22px; border-right: 1px solid rgba(231, 174, 87, 0.35); }
+.trust-item:first-child { padding-left: 0; }
+.trust-item:last-child { border: 0; }
+.trust-icon { font-size: 30px; color: var(--gold-light); display: grid; }
+.trust-item b { display: block; font: 600 14px var(--font-playfair), serif; color: var(--gold-light); margin-bottom: 4px; }
+.trust-item small { font-size: 11px; color: #e5d5c3; }
+
+/* ---------- Sections de l'accueil ---------- */
+.band { padding: 82px 5.2%; }
+.band-cream { background: var(--cream); }
+.band-sand { background: var(--sand); }
+.band-white { background: #fff; }
+.section-head { text-align: center; max-width: 650px; margin: 0 auto 38px; }
+.section-head .section-kicker, .contact-band .section-kicker { justify-content: center; }
+.section-head h2, .story-copy h2, .contact-band h2 { font: 500 clamp(30px, 3.5vw, 46px) var(--font-playfair), serif; margin: 12px 0; color: #28130f; }
+.section-head p { color: #806e60; line-height: 1.7; font-size: 14px; margin: 0; }
+.band-more { text-align: center; margin: 30px 0 0; font-weight: 700; font-size: 13px; }
+
+.category-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 14px; }
+.category-card { background: #fff; border: 1px solid #eee2d3; border-radius: 14px; padding: 12px 10px 17px; text-align: center; box-shadow: 0 8px 22px rgba(50, 24, 10, 0.045); transition: 0.25s; display: block; }
+.category-card:hover { transform: translateY(-7px); box-shadow: var(--shadow); border-color: #d6a85f; }
+.category-card img { width: 100%; height: 130px; object-fit: contain; mix-blend-mode: multiply; }
+.category-card h3 { font: 600 13px var(--font-playfair), serif; margin: 10px 0 0; color: #4b1820; }
+
+.products-home { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+
+.story-band { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 55px; }
+.story-visual { height: 430px; border-radius: 18px; overflow: hidden; position: relative; background: url("/hero.png") 70% center / cover; }
+.story-visual::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(20, 8, 7, 0.32), transparent 55%); }
+.story-copy h2 { max-width: 500px; }
+.story-copy p { color: #77685d; line-height: 1.85; font-size: 14px; max-width: 510px; }
+.story-copy .btn { margin-top: 14px; }
+
+.contact-band { background: linear-gradient(110deg, #230d12, #4a1420); color: #fff; text-align: center; padding: 68px 20px; }
+.contact-band .section-kicker { color: var(--gold-light); }
+.contact-band h2 { color: #f5d49a; }
+.contact-band p { color: #dfc9b8; font-size: 14px; margin: 0 0 24px; }
+
+/* ---------- Cartes produit ---------- */
+.product { border: 0; border-radius: 14px; box-shadow: 0 8px 25px rgba(55, 24, 12, 0.07); }
+.product-image { height: 220px; background: #ead9c7; }
+.product-info { padding: 16px; }
+.product-info h3 { font: 600 16px var(--font-playfair), serif; color: #2a1510; margin: 0 0 6px; min-height: 0; }
+.product-meta { margin: 0 0 12px; color: #9a7652; font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; }
+.price { color: #8b1831; font-weight: 700; }
+.add-cart { width: 38px; height: 38px; border-radius: 50%; background: #4b111e; color: #f7d89b; }
+.add-cart:hover { background: #2c0a12; }
+.heart.on, .oos { color: #8b1831; }
+
+/* ---------- Pages intérieures ---------- */
+.page-hero { background: linear-gradient(110deg, #1a0b0b, #3a1218); color: #fff; }
+.page-hero .eyebrow { justify-content: center; }
+.page-hero h1 { color: #fff; }
+.page-hero h1 span { color: var(--gold-light); }
+.page-hero p { color: #e5d5c3; }
+
+.shop-hero { background: #180c0c; color: #fff; min-height: 240px; }
+.shop-hero::after { background: linear-gradient(90deg, rgba(18, 8, 9, 0.95) 0%, rgba(27, 10, 10, 0.82) 38%, rgba(30, 11, 9, 0.2) 70%); }
+.shop-hero h1 { color: #fff; }
+.shop-hero h1 span { color: var(--gold-light); text-decoration-color: var(--gold); }
+.shop-hero p { color: #f0e4d6; }
+.shop-cta { background: linear-gradient(110deg, #230d12, #4a1420); color: #fff; }
+.shop-cta h2 { color: #f5d49a; font-weight: 500; }
+.shop-cta p { color: #dfc9b8; }
+
+.filters-title { background: linear-gradient(100deg, #2a0d12, #4a101d); color: var(--gold-light); }
+.filters li button:hover, .filters li button.on { background: var(--sand); color: var(--wine); }
+.filters li em { background: var(--sand); }
+.chip.on, .view.on, .pagination button.on { background: var(--wine); border-color: var(--wine); color: var(--gold-light); }
+.chip:hover { border-color: var(--bronze); color: var(--wine); }
+.section-heading h2::before { background: var(--gold); }
+.about-h2, .post-info h3, .section-heading h2, .admin-title { color: #28130f; }
+.value .symbol, .benefit .symbol { color: var(--bronze); }
+.form-done { background: var(--sand); }
+.contact-info { background: var(--dark-band); }
+.contact-info h3 { color: var(--gold-light); font-weight: 500; }
+.steps li.done { background: var(--wine); border-color: var(--wine); color: var(--gold-light); }
+.steps li.now { border-color: var(--bronze); color: var(--wine); }
+.track-code { border-color: var(--bronze); }
+.toast { background: #25100e; }
+
+/* ---------- Footer ---------- */
+footer { background: #120909; color: #e8d7c4; padding: 52px 5.2% 22px; }
+.footer-inner { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 35px; max-width: none; }
+.footer-brand { font: 600 22px var(--font-playfair), serif; letter-spacing: 0.13em; color: #e7b75e; margin-bottom: 12px; }
+footer h4 { font: 500 19px var(--font-playfair), serif; color: #e7b75e; margin: 0 0 14px; }
+footer p, footer a { color: #c6b4a4; line-height: 2; }
+footer a:hover { color: var(--gold-light); }
+.copyright { border-top: 1px solid rgba(223, 173, 99, 0.2); margin-top: 35px; padding-top: 18px; text-align: center; color: #927f70; font-size: 10px; }
+
+/* ---------- Administration ---------- */
+.admin-nav strong { color: var(--wine); }
+.admin-nav a:hover { background: var(--sand); color: var(--wine); }
+.admin-logout { border-color: var(--wine); color: var(--wine); }
+.admin-logout:hover { background: var(--wine); color: var(--gold-light); }
+.stat strong { color: var(--wine); }
+
+/* ---------- Tablette et mobile ---------- */
+@media (max-width: 1100px) {
+  .category-grid { grid-template-columns: repeat(4, 1fr); }
+  .products-home { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .brand { min-width: 0; }
+  .brand-copy b { font-size: 20px; }
+}
+@media (max-width: 760px) {
+  .main-header nav { background: #1c0c0d; top: 70px; }
+  .main-header nav a.active { border-radius: 30px; display: inline-flex; align-self: flex-start; }
+  .brand img { width: 44px; height: 44px; }
+  .brand-copy b { font-size: 15px; letter-spacing: 0.1em; }
+  .brand-copy small { font-size: 7px; margin-top: 4px; }
+  .hero { min-height: 600px; }
+  .hero-bg { object-position: 62% center; }
+  .hero::after { background: linear-gradient(90deg, rgba(18, 8, 9, 0.94), rgba(22, 8, 8, 0.7) 65%, rgba(20, 8, 7, 0.4)); }
+  .hero-inner { padding: 60px 6%; }
+  .hero h1 { font-size: 44px; }
+  .hero p { font-size: 14px; }
+  .shop-hero::after { background: rgba(20, 8, 8, 0.78); }
+  .trust { grid-template-columns: repeat(2, 1fr); gap: 20px; padding: 25px 6%; }
+  .trust-item { padding: 0; border: 0; }
+  .trust-icon { font-size: 24px; }
+  .band { padding: 60px 5%; }
+  .category-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .products-home { gap: 12px; }
+  .product-image { height: 165px; }
+  .product-info { padding: 12px; }
+  .product-info h3 { font-size: 14px; }
+  .story-band { grid-template-columns: 1fr; gap: 28px; }
+  .story-visual { height: 280px; }
+  .footer-inner { grid-template-columns: repeat(2, 1fr); gap: 25px; }
+}

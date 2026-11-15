@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Layout
 
-`artMalagasy/` holds two separate git repos: `front/` (this Next.js 16 storefront, French-language, "ArtMadagascar" handicrafts) and `art-malagasy-back/` (Express + MongoDB REST API). Run front commands from `front/`. The front has **no database of its own**: everything goes through the back's API.
+`artMalagasy/` holds two separate git repos: `front/` (this Next.js 16 storefront, French / English, brand "IKALA MANJ’ART", Malagasy handicrafts sold internationally) and `art-malagasy-back/` (Express + MongoDB REST API). Run front commands from `front/`. The front has **no database of its own**: everything goes through the back's API.
 
 ## Commands
 
@@ -36,4 +36,5 @@ Env (`.env.local`, git-ignored): `API_URL` (default `http://localhost:4000/api/v
 - **Orders are guest orders** (the back has no customer↔order link): the cart is in `localStorage` ([ShopProvider.tsx](app/components/ShopProvider.tsx), via `useSyncExternalStore`); checkout posts to the back, which recomputes prices from the DB and returns a `trackingCode`; customers follow orders at `/suivi/[code]`. Stock is not auto-decremented by the back.
 - **Deploy**: Vercel is linked to the `vercel` remote (`Eddy007Saive/art-malagasy-front`); `aroniaina` is the shared repo. Push to both.
 - **Categories** (= product types) are dynamic (from the API); only the seven known French labels map to illustrations in `public/categories/<slug>.png` (see `lib/products.ts`).
-- **Styling**: hand-written CSS in [app/globals.css](app/globals.css) (storefront) and [app/shop.css](app/shop.css) (auth/cart/admin), with CSS variables (wine/cream/gold) and `next/font` (DM Sans, Playfair Display). Tailwind v4 is only imported, not used for classes. [template-artmadagascar.html](template-artmadagascar.html) is the original static mockup.
+- **Brand constants** (name, phone, email, WhatsApp number) are in [lib/site.ts](lib/site.ts).
+- **Styling**: hand-written CSS in [app/globals.css](app/globals.css) (base layout), [app/shop.css](app/shop.css) (auth/cart/admin) and [app/theme.css](app/theme.css), loaded last: it holds the current dark-and-gold IKALA MANJ’ART palette and the home page sections, and overrides the two older files. Change colours there. CSS variables (ink/wine/gold/cream) and `next/font` (DM Sans, Playfair Display). Tailwind v4 is only imported, not used for classes. [template-ikala-manjart.html](template-ikala-manjart.html) is the current design mockup ([template-artmadagascar.html](template-artmadagascar.html) is the first one, superseded).

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Suspense, useState } from "react";
 import { locales, type Lang } from "@/lib/dictionaries";
+import { BRAND } from "@/lib/site";
 import { currencies, useI18n, type Currency } from "./I18nProvider";
 import { Icon } from "./Icons";
 import { useShop } from "./ShopProvider";
@@ -88,8 +89,9 @@ export default function Header() {
         <button className="menu-toggle" aria-label={d.nav.menu} onClick={() => setOpen((o) => !o)}>
           <Icon name="menu" />
         </button>
-        <Link className="brand" href={to("/")} aria-label="ArtMadagascar">
-          <Image src="/logo.png" alt="ArtMadagascar" width={168} height={56} priority style={{ height: "auto" }} />
+        <Link className="brand" href={to("/")} aria-label={BRAND}>
+          <Image src="/logo-ikala.jpg" alt="" width={64} height={64} priority />
+          <span className="brand-copy"><b>IKALA</b><small>MANJ’ART</small></span>
         </Link>
         <nav className={open ? "open" : ""} onClick={() => setOpen(false)}>
           <Suspense fallback={<LinkList current={null} />}>

@@ -5,6 +5,7 @@ import { dictionaries, isLang, locales } from "@/lib/dictionaries";
 import { fontClasses } from "../fonts";
 import "../globals.css";
 import "../shop.css";
+import "../theme.css";
 
 // Une version statique par langue : /fr/... et /en/...
 export function generateStaticParams() {
