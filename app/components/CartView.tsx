@@ -66,6 +66,7 @@ export default function CartView() {
           <label>{c.notes}<textarea name="instructions" rows={2} /></label>
           {state.error && <p className="form-error" role="alert">{state.error}</p>}
           <button className="btn" type="submit" disabled={pending}>{pending ? c.sending : c.order}</button>
+          <p className="muted-small">{c.acceptBefore} <Link className="text-link" href={to("/cgv")} target="_blank">{c.acceptLink}</Link>.</p>
         </form>
         <button className="text-link linklike" onClick={clearCart}>{c.clear}</button>
       </aside>

@@ -371,3 +371,9 @@ footer a:hover { color: var(--gold-light); }
   .pf-photos { position: static; }
   .pf-main, .pf-empty { max-width: 320px; }
 }
+
+/* ---------- Pages légales (CGV, CGU) ---------- */
+.legal { max-width: 820px; }
+.legal-updated { color: var(--muted); font-size: 13px; margin: 0 0 8px; }
+.legal h2 { font: 600 20px var(--font-playfair), serif; color: #28130f; margin: 30px 0 10px; }
+.legal p { color: #4d3f37; line-height: 1.8; font-size: 15px; margin: 0 0 10px; }

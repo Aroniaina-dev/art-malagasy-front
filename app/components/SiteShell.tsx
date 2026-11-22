@@ -32,7 +32,7 @@ export default function SiteShell({ lang, children }: { lang: Lang; children: Re
           <div className="footer-inner">
             <div><Image className="footer-logo" src="/logo-ikala.png" alt={BRAND} width={170} height={170} /><p>{d.footer.tagline}<br />{d.footer.tagline2}</p></div>
             <div><h4>{d.footer.shop}</h4><p><Link href={href(lang, "/boutique")}>{d.footer.allProducts}</Link><br /><Link href={href(lang, "/panier")}>{d.nav.cart}</Link><br /><Link href={href(lang, "/suivi")}>{d.footer.track}</Link></p></div>
-            <div><h4>{d.footer.info}</h4><p><Link href={href(lang, "/a-propos")}>{d.nav.about}</Link><br /><Link href={href(lang, "/blog")}>{d.nav.blog}</Link><br /><Link href={href(lang, "/contact")}>{d.nav.contact}</Link></p></div>
+            <div><h4>{d.footer.info}</h4><p><Link href={href(lang, "/a-propos")}>{d.nav.about}</Link><br /><Link href={href(lang, "/blog")}>{d.nav.blog}</Link><br /><Link href={href(lang, "/contact")}>{d.nav.contact}</Link><br /><Link href={href(lang, "/cgv")}>{d.footer.cgv}</Link><br /><Link href={href(lang, "/cgu")}>{d.footer.cgu}</Link></p></div>
             <div><h4>{d.footer.contact}</h4><p>Madagascar<br />{PHONE}<br />{EMAIL}</p></div>
           </div>
           <div className="copyright">© {YEAR} {BRAND}. {d.footer.rights}</div>
