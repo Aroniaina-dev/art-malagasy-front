@@ -71,6 +71,7 @@ export default function Catalog({ products, categories, sizes, colorTypes }: Pro
     const haystack = (p: Product) =>
       [p.name, p.description, ...p.colors, ...p.colors.map((c) => label(d, c))].join(" ").toLocaleLowerCase("fr");
     return products
+      .filter((p) => p.hidden !== 1)
       .filter((p) => (!cat || p.category === cat) && (!size || p.size === size) && (!colorType || p.colorType === colorType))
       .filter((p) => !color || p.colors.some((c) => c.toLocaleLowerCase("fr") === color))
       .filter((p) => (!range || inRange(range, p)) && (!stockOnly || p.inStock))

@@ -17,6 +17,7 @@ export type ApiProduit = {
   couleur?: string[];
   nbrStock?: number;
   archive?: number;
+  hidden?: number;
 };
 type ApiBlog = {
   _id: string;
@@ -58,6 +59,7 @@ export const toProduct = (a: ApiProduit): Product => {
     price: typeof a.prix === "number" ? a.prix : null,
     stock,
     inStock: stock > 0,
+    hidden: a.hidden ?? 2,
   };
 };
 
@@ -97,7 +99,9 @@ function enrich(a: ApiProduit, refs: Awaited<ReturnType<typeof loadRefs>>): Prod
 /** Produits visibles en boutique (les produits archivés sont masqués). */
 export async function getProducts(limit?: number): Promise<Product[]> {
   const [all, refs] = await Promise.all([getAllProducts(), loadRefs()]);
+  // console.log("Produits bruts :", all);
   const list = all.filter((a) => a.archive !== 1).map((a) => enrich(a, refs));
+  // console.log("Produits visibles test :", list);
   return limit ? list.slice(0, limit) : list;
 }
 

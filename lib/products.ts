@@ -28,6 +28,7 @@ export type Product = {
   images: string[];
   category: string; // id du type de produit
   categoryLabel?: string;
+  hidden?: number;
   size: string; // id de taille
   colorType: string; // id du type de couleur
   colors: string[];

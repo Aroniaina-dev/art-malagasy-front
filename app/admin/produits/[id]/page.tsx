@@ -31,6 +31,7 @@ export default async function EditProduct({ params }: { params: Promise<{ id: st
           idTypeCouleur: String(a.idTypeCouleur),
           couleur: (a.couleur ?? []).join(", "),
           photos: (a.photos ?? []).map((ph) => fileUrl(ph)),
+          hidden: a.hidden ?? null
         }}
       />
     </>

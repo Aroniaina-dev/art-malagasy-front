@@ -16,24 +16,50 @@ function ProductCard({ p }: { p: Product }) {
   const orderable = p.inStock && p.price !== null;
   const meta = [
     p.sizeLabel && label(d, p.sizeLabel),
-    p.colors.length ? p.colors.map((c) => label(d, c)).join(", ") : p.colorTypeLabel && label(d, p.colorTypeLabel),
+    p.colors.length
+      ? p.colors.map((c) => label(d, c)).join(", ")
+      : p.colorTypeLabel && label(d, p.colorTypeLabel),
   ].filter(Boolean);
 
   return (
     <article className="product">
       <div className="product-image">
-        <Link className="product-photo-link" href={to(`/produit/${p.id}`)} aria-label={fill(d.product.view, { name: p.name })}>
-          <Image src={p.image} alt={p.name} fill sizes="(max-width: 760px) 50vw, 20vw" unoptimized={!isOptimizable(p.image)} />
+        <Link
+          className="product-photo-link"
+          href={to(`/produit/${p.id}`)}
+          aria-label={fill(d.product.view, { name: p.name })}
+        >
+          <Image
+            src={p.image}
+            alt={p.name}
+            fill
+            sizes="(max-width: 760px) 50vw, 20vw"
+            unoptimized={!isOptimizable(p.image)}
+          />
         </Link>
-        <button className={`heart${liked ? " on" : ""}`} aria-label={d.product.favorite} aria-pressed={liked} onClick={() => setLiked((l) => !l)}>
+        <button
+          className={`heart${liked ? " on" : ""}`}
+          aria-label={d.product.favorite}
+          aria-pressed={liked}
+          onClick={() => setLiked((l) => !l)}
+        >
           <Icon name="heart" />
         </button>
       </div>
       <div className="product-info">
-        <h3><Link href={to(`/produit/${p.id}`)}>{p.name}</Link></h3>
+        <h3>
+          <Link href={to(`/produit/${p.id}`)}>{p.name}</Link>
+        </h3>
         {meta.length > 0 && <p className="product-meta">{meta.join(" · ")}</p>}
         <div className="price-row">
-          <span className="price" title={p.price !== null && currency !== "EUR" ? euros(p.price) : undefined}>
+          <span
+            className="price"
+            title={
+              p.price !== null && currency !== "EUR"
+                ? euros(p.price)
+                : undefined
+            }
+          >
             {p.price === null ? d.product.onRequest : money(p.price)}
           </span>
           <button
@@ -41,25 +67,50 @@ function ProductCard({ p }: { p: Product }) {
             aria-label={fill(d.product.addToCart, { name: p.name })}
             onClick={() => addToCart(p)}
             disabled={!orderable}
-            title={orderable ? undefined : p.inStock ? d.product.priceOnRequest : d.product.outOfStock}
+            title={
+              orderable
+                ? undefined
+                : p.inStock
+                  ? d.product.priceOnRequest
+                  : d.product.outOfStock
+            }
           >
             <Icon name="cart" />
           </button>
         </div>
-        {!p.inStock && <div className="rating"><span className="oos">{d.product.outOfStock}</span></div>}
+        {!p.inStock && (
+          <div className="rating">
+            <span className="oos">{d.product.outOfStock}</span>
+          </div>
+        )}
       </div>
     </article>
   );
 }
 
-export default function ProductGrid({ items, className = "", filterByQuery = true }: { items: Product[]; className?: string; filterByQuery?: boolean }) {
+export default function ProductGrid({
+  items,
+  className = "",
+  filterByQuery = true,
+}: {
+  items: Product[];
+  className?: string;
+  filterByQuery?: boolean;
+}) {
   const { query } = useShop();
   const { d } = useI18n();
   const term = filterByQuery ? query.trim().toLocaleLowerCase("fr") : "";
-  const list = items.filter((p) => p.name.toLocaleLowerCase("fr").includes(term));
+  const list = items.filter(
+    (p) => p.hidden !== 1 && p.name.toLocaleLowerCase("fr").includes(term),
+  );
+  // console.log("Ito le liste", list);
   return (
     <div className={`products ${className}`}>
-      {list.length ? list.map((p) => <ProductCard key={p.id} p={p} />) : <p className="no-result">{d.shop.noResult}</p>}
+      {list.length ? (
+        list.map((p) => <ProductCard key={p.id} p={p} />)
+      ) : (
+        <p className="no-result">{d.shop.noResult}</p>
+      )}
     </div>
   );
 }

@@ -9,7 +9,8 @@ import type { FormState } from "./contact";
 /** Chaque action revérifie la session ; le back revérifie aussi le rôle (JWT admin). */
 const adminToken = async () => (await requireAdmin()).token;
 
-const msg = (e: unknown) => (e instanceof ApiError ? e.message : "Une erreur est survenue.");
+const msg = (e: unknown) =>
+  e instanceof ApiError ? e.message : "Une erreur est survenue.";
 
 /** Action de liste (bouton) : en cas d'erreur, retour à la page avec un message. */
 async function run(back: string, fn: () => Promise<unknown>): Promise<never> {
@@ -27,36 +28,61 @@ const files = (form: FormData, field: string) =>
 const imageUrl = z
   .string()
   .trim()
-  .refine((v) => v === "" || /^https:\/\//.test(v), "L'URL de l'image doit commencer par https://");
+  .refine(
+    (v) => v === "" || /^https:\/\//.test(v),
+    "L'URL de l'image doit commencer par https://",
+  );
 
 /* ------------------------------ Produits ------------------------------ */
 
 const productSchema = z.object({
   titre: z.string().trim().min(2, "Titre requis").max(150),
   description: z.string().trim().min(3, "Description requise").max(2000),
-  // en euros, deux décimales au plus
-  prix: z.coerce.number({ error: "Prix invalide" }).min(0.01, "Prix invalide").max(100000, "Prix invalide").multipleOf(0.01, "Prix : deux décimales au maximum"),
-  nbrStock: z.coerce.number({ error: "Stock invalide" }).int("Stock invalide").min(0, "Stock invalide"),
+
+  prix: z.coerce
+    .number()
+    .min(0.01, "Prix invalide")
+    .max(100000, "Prix invalide"),
+
+  nbrStock: z.coerce.number().int("Stock invalide").min(0, "Stock invalide"),
+
   idTypeProduit: z.string().min(1, "Type de produit requis"),
   idTaille: z.string().min(1, "Taille requise"),
   idTypeCouleur: z.string().min(1, "Type de couleur requis"),
+
   couleur: z.string().trim().max(200).optional(),
   photoUrl: imageUrl.optional(),
+
+  hidden: z.coerce.number().int().min(1).max(2).default(2),
 });
 
 const UPLOADS_OFF =
   "Le serveur n'accepte pas encore l'envoi de fichiers photo (version du back trop ancienne). Indiquez une URL d'image à la place, ou mettez le back à jour.";
 
-export async function saveProduct(_prev: FormState, form: FormData): Promise<FormState> {
+export async function saveProduct(
+  _prev: FormState,
+  form: FormData,
+): Promise<FormState> {
   const session = await requireAdmin();
   const token = session.token;
   const id = String(form.get("id") ?? "");
-  const parsed = productSchema.safeParse(Object.fromEntries(form));
-  if (!parsed.success) return { error: parsed.error.issues[0].message };
+  const rawData = Object.fromEntries(form);
+  console.log("DONNÉES DU FORMULAIRE :", rawData);
+  const parsed = productSchema.safeParse(rawData);
+  if (!parsed.success) {
+    console.log("ERREURS ZOD :", parsed.error.issues);
+    return {
+      error: parsed.error.issues[0].message,
+    };
+  }
   const { photoUrl, couleur, ...d } = parsed.data;
-  const couleurs = (couleur ?? "").split(",").map((c) => c.trim()).filter(Boolean);
+  const couleurs = (couleur ?? "")
+    .split(",")
+    .map((c) => c.trim())
+    .filter(Boolean);
   const uploads = files(form, "photos");
-  if (uploads.some((f) => !/^image\/(jpeg|png|webp)$/.test(f.type))) return { error: "Photos : formats acceptés JPG, PNG ou WebP." };
+  if (uploads.some((f) => !/^image\/(jpeg|png|webp)$/.test(f.type)))
+    return { error: "Photos : formats acceptés JPG, PNG ou WebP." };
 
   try {
     if (uploads.length) {
@@ -66,10 +92,14 @@ export async function saveProduct(_prev: FormState, form: FormData): Promise<For
       couleurs.forEach((c) => body.append("couleur", c));
       uploads.forEach((f) => body.append("photos", f));
       try {
-        await api(id ? `/produit/${id}?source=produit` : "/produit?source=produit", { method: id ? "PUT" : "POST", token, form: body });
+        await api(
+          id ? `/produit/${id}?source=produit` : "/produit?source=produit",
+          { method: id ? "PUT" : "POST", token, form: body },
+        );
       } catch (e) {
         // un back qui ne décode pas le multipart voit un formulaire vide et réclame tous les champs
-        if (e instanceof ApiError && /is required/i.test(e.message)) return { error: UPLOADS_OFF };
+        if (e instanceof ApiError && /is required/i.test(e.message))
+          return { error: UPLOADS_OFF };
         throw e;
       }
     } else {
@@ -78,11 +108,20 @@ export async function saveProduct(_prev: FormState, form: FormData): Promise<For
       if (id) {
         await api(`/produit/${id}`, { method: "PUT", token, json: fields });
       } else {
-        const created = await api<{ data: { _id: string } }>("/produit", { method: "POST", token, json: { ...fields, ...(photoUrl ? { photos: [photoUrl] } : {}) } });
+        const created = await api<{ data: { _id: string } }>("/produit", {
+          method: "POST",
+          token,
+          json: { ...fields, ...(photoUrl ? { photos: [photoUrl] } : {}) },
+        });
         productId = created.data._id;
       }
       // Photo par URL : envoyée aussi dans une mise à jour, car d'anciennes versions du back l'ignorent à la création.
-      if (photoUrl) await api(`/produit/${productId}`, { method: "PUT", token, json: { photos: [photoUrl] } });
+      if (photoUrl)
+        await api(`/produit/${productId}`, {
+          method: "PUT",
+          token,
+          json: { photos: [photoUrl] },
+        });
     }
   } catch (e) {
     return { error: msg(e) };
@@ -93,12 +132,20 @@ export async function saveProduct(_prev: FormState, form: FormData): Promise<For
 export async function setProductArchive(form: FormData) {
   const token = await adminToken();
   const archive = form.get("archive") === "1" ? 1 : 2;
-  await run("/admin/produits", () => api(`/produit/${form.get("id")}`, { method: "PUT", token, json: { archive } }));
+  await run("/admin/produits", () =>
+    api(`/produit/${form.get("id")}`, {
+      method: "PUT",
+      token,
+      json: { archive },
+    }),
+  );
 }
 
 export async function deleteProduct(form: FormData) {
   const token = await adminToken();
-  await run("/admin/produits", () => api(`/produit/${form.get("id")}`, { method: "DELETE", token }));
+  await run("/admin/produits", () =>
+    api(`/produit/${form.get("id")}`, { method: "DELETE", token }),
+  );
 }
 
 /* ---------------- Référentiels : types de produit, tailles, types de couleur ---------------- */
@@ -111,7 +158,9 @@ export async function createRef(form: FormData) {
   const kind = refKind.parse(form.get("kind"));
   const nom = String(form.get("nom") ?? "").trim();
   if (!nom) redirect(`${REFS}?erreur=Nom%20requis`);
-  await run(REFS, () => api(`/${kind}`, { method: "POST", token, json: { nom } }));
+  await run(REFS, () =>
+    api(`/${kind}`, { method: "POST", token, json: { nom } }),
+  );
 }
 
 export async function renameRef(form: FormData) {
@@ -119,13 +168,21 @@ export async function renameRef(form: FormData) {
   const kind = refKind.parse(form.get("kind"));
   const nom = String(form.get("nom") ?? "").trim();
   if (!nom) redirect(`${REFS}?erreur=Nom%20requis`);
-  await run(REFS, () => api(`/${kind}/${form.get("id")}`, { method: "PATCH", token, json: { nom } }));
+  await run(REFS, () =>
+    api(`/${kind}/${form.get("id")}`, {
+      method: "PATCH",
+      token,
+      json: { nom },
+    }),
+  );
 }
 
 export async function deleteRef(form: FormData) {
   const token = await adminToken();
   const kind = refKind.parse(form.get("kind"));
-  await run(REFS, () => api(`/${kind}/${form.get("id")}`, { method: "DELETE", token }));
+  await run(REFS, () =>
+    api(`/${kind}/${form.get("id")}`, { method: "DELETE", token }),
+  );
 }
 
 /* ------------------------------ Commandes ----------------------------- */
@@ -136,7 +193,11 @@ export async function advanceOrder(form: FormData) {
   if (!status.success) redirect("/admin/commandes?erreur=Étape%20invalide");
   const note = String(form.get("note") ?? "").trim();
   await run("/admin/commandes", () =>
-    api(`/commandes/${form.get("id")}/status`, { method: "PATCH", token, json: { status: status.data, note: note || undefined } }),
+    api(`/commandes/${form.get("id")}/status`, {
+      method: "PATCH",
+      token,
+      json: { status: status.data, note: note || undefined },
+    }),
   );
 }
 
@@ -144,7 +205,11 @@ export async function confirmPayment(form: FormData) {
   const token = await adminToken();
   const note = String(form.get("note") ?? "").trim();
   await run("/admin/commandes", () =>
-    api(`/commandes/${form.get("id")}/payment`, { method: "PATCH", token, json: { note: note || undefined } }),
+    api(`/commandes/${form.get("id")}/payment`, {
+      method: "PATCH",
+      token,
+      json: { note: note || undefined },
+    }),
   );
 }
 
@@ -159,7 +224,10 @@ const postSchema = z.object({
   image: imageUrl.optional(),
 });
 
-export async function savePost(_prev: FormState, form: FormData): Promise<FormState> {
+export async function savePost(
+  _prev: FormState,
+  form: FormData,
+): Promise<FormState> {
   const token = await adminToken();
   const id = String(form.get("id") ?? "");
   const parsed = postSchema.safeParse(Object.fromEntries(form));
@@ -167,15 +235,22 @@ export async function savePost(_prev: FormState, form: FormData): Promise<FormSt
   const d = parsed.data;
 
   const uploads = files(form, "photos");
-  if (!id && uploads.length === 0 && !d.image) return { error: "Ajoutez une image (fichier ou URL)." };
+  if (!id && uploads.length === 0 && !d.image)
+    return { error: "Ajoutez une image (fichier ou URL)." };
 
   const body = new FormData();
-  for (const [k, v] of Object.entries(d)) if (v !== undefined && v !== "" && !(k === "image" && uploads.length)) body.append(k, String(v));
+  for (const [k, v] of Object.entries(d))
+    if (v !== undefined && v !== "" && !(k === "image" && uploads.length))
+      body.append(k, String(v));
   body.append("publie", form.get("publie") === "on" ? "true" : "false");
   if (uploads[0]) body.append("photos", uploads[0]);
 
   try {
-    await api(id ? `/blog/${id}?source=blog` : "/blog?source=blog", { method: id ? "PUT" : "POST", token, form: body });
+    await api(id ? `/blog/${id}?source=blog` : "/blog?source=blog", {
+      method: id ? "PUT" : "POST",
+      token,
+      form: body,
+    });
   } catch (e) {
     return { error: msg(e) };
   }
@@ -184,7 +259,9 @@ export async function savePost(_prev: FormState, form: FormData): Promise<FormSt
 
 export async function deletePost(form: FormData) {
   const token = await adminToken();
-  await run("/admin/blog", () => api(`/blog/${form.get("id")}`, { method: "DELETE", token }));
+  await run("/admin/blog", () =>
+    api(`/blog/${form.get("id")}`, { method: "DELETE", token }),
+  );
 }
 
 /* ------------------------------- Messages ----------------------------- */
@@ -192,11 +269,17 @@ export async function deletePost(form: FormData) {
 export async function setMessageRead(form: FormData) {
   const token = await adminToken();
   await run("/admin/messages", () =>
-    api(`/messages/${form.get("id")}/read`, { method: "PATCH", token, json: { lu: form.get("lu") === "true" } }),
+    api(`/messages/${form.get("id")}/read`, {
+      method: "PATCH",
+      token,
+      json: { lu: form.get("lu") === "true" },
+    }),
   );
 }
 
 export async function deleteMessage(form: FormData) {
   const token = await adminToken();
-  await run("/admin/messages", () => api(`/messages/${form.get("id")}`, { method: "DELETE", token }));
+  await run("/admin/messages", () =>
+    api(`/messages/${form.get("id")}`, { method: "DELETE", token }),
+  );
 }

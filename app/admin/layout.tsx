@@ -7,12 +7,14 @@ import { fontClasses } from "../fonts";
 import "../globals.css";
 import "../shop.css";
 import "../theme.css";
+import "./catalogue/catalogue.css";
 
 export const metadata: Metadata = { title: "Administration | IKALA MANJ’ART", robots: { index: false } };
 
 const nav = [
   { href: "/admin", label: "Tableau de bord" },
   { href: "/admin/produits", label: "Produits" },
+  { href: "/admin/catalogue", label: "Catalogue PDF" },
   { href: "/admin/referentiels", label: "Référentiels" },
   { href: "/admin/commandes", label: "Commandes" },
   { href: "/admin/blog", label: "Blog" },
